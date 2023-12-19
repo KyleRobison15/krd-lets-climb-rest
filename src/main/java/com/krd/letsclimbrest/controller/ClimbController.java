@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/v1")
 @CrossOrigin({"*", "http://localhost:8080/*"})
 public class ClimbController {
 
