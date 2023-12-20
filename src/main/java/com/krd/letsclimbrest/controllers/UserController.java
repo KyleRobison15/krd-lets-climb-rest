@@ -1,4 +1,4 @@
-package com.krd.letsclimbrest.controller;
+package com.krd.letsclimbrest.controllers;
 
 import com.krd.letsclimbrest.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

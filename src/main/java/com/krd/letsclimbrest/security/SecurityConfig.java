@@ -1,5 +1,6 @@
 package com.krd.letsclimbrest.security;
 
+import com.krd.letsclimbrest.constants.SecurityConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +43,7 @@ public class SecurityConfig {
                 // Define our restricted and permitted request paths
                 .authorizeHttpRequests((authorize) -> authorize
                         // Permit all requests to the /api/auth path as these endpoints are for registering and logging in
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers(SecurityConstants.WHITE_LIST_URL_ARRAY).permitAll()
                         // Require that all other requests not matching our white listed paths be authenticated
                         .anyRequest().authenticated()
                 )

@@ -1,4 +1,4 @@
-package com.krd.letsclimbrest.controller;
+package com.krd.letsclimbrest.controllers;
 
 import com.krd.letsclimbrest.dto.AuthenticationRequest;
 import com.krd.letsclimbrest.dto.AuthenticationResponse;

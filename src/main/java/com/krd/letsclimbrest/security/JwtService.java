@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +36,14 @@ public class JwtService {
      *      3. Signature -> Verifies the sender of the JWT
      */
 
-    // Generated from
-    private static final String SECRET_KEY = "524149cdbb00292e7f5f52f68290d55e3ca42597dfc823aa3b942065c8e4d006";
+
+    // Our secret key was generated randomly and is stored in our application.yml configuration via VM Args
+    @Value("${application.security.jwt.secret-key}")
+    private String secretKey;
+
+    // Our jwtExpiration time is set in our application.yml
+    @Value("${application.security.jwt.expiration}")
+    private long jwtExpiration;
 
 
     /**
@@ -53,7 +60,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Tokens will be valid for 24 hours
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration)) // Tokens will be valid for 24 hours
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -149,7 +156,7 @@ public class JwtService {
 
     // Decodes the signing key
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
