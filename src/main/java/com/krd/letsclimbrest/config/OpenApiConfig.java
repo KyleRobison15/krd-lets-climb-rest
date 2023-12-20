@@ -1,8 +1,13 @@
 package com.krd.letsclimbrest.config;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +15,33 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Handle configuration of the OpenAPI service documentation
  */
-@Configuration
+@OpenAPIDefinition(
+        info = @Info(
+                contact = @Contact(
+                        name = "Kyle Robison",
+                        email = "kylerobison@gmail.com",
+                        url = "https://github.com/KyleRobison15/krd-lets-climb-rest.git"
+                ),
+                title = "krd-lets-climb-rest",
+                description = "REST API Documentation for the Let's Climb full-stack web application",
+                version = "1.0"
+        ),
+        security = {
+                @SecurityRequirement(
+                        name = "bearerAuth"
+                )
+        }
+)
+@SecurityScheme(
+        name = "bearerAuth",
+        description = "This API is secured using JSON Web Tokens.  " +
+                "To make a request to a secured endpoint, you must obtain a token by authenticating as an existing user, or registering as a new user. " +
+                "Then enter your token here to use the secured endpoints.",
+        scheme = "bearer",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        in = SecuritySchemeIn.HEADER
+)
 public class OpenApiConfig {
 
     /**
@@ -22,18 +53,6 @@ public class OpenApiConfig {
                 .group("com.krd.letsclimbrest")
                 .pathsToMatch("/**")
                 .build();
-    }
-
-    @Bean
-    public OpenAPI apiInfo() {
-        return new OpenAPI()
-                .info(new Info().title("krd-lets-climb-rest API")
-                        .contact(new Contact()
-                                .name("Kyle Robison")
-                                .url("https://github.com/KyleRobison15/krd-lets-climb-rest.git")
-                                .email("kylerobison15@gmail.com"))
-                        .description("REST API for the Let's Climb full-stack web application.")
-                );
     }
 
 }
