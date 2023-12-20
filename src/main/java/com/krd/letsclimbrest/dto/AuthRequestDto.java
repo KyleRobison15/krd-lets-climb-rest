@@ -1,4 +1,4 @@
-package com.krd.letsclimbrest.entities;
+package com.krd.letsclimbrest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthRequest {
+public class AuthRequestDto {
 
     private String username;
     private String password;

@@ -1,7 +1,9 @@
 package com.krd.letsclimbrest.controller;
 
-import com.krd.letsclimbrest.entities.AuthRequest;
+import com.krd.letsclimbrest.dto.AuthRequestDto;
+import com.krd.letsclimbrest.dto.AuthResponseDto;
 import com.krd.letsclimbrest.entities.User;
+import com.krd.letsclimbrest.security.JwtProvider;
 import com.krd.letsclimbrest.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,9 @@ public class AuthController {
     @Autowired
     AuthService authService;
 
+    @Autowired
+    JwtProvider jwtProvider;
+
     private final AuthenticationManager authenticationManager;
 
     public AuthController(AuthenticationManager authenticationManager) {
@@ -29,14 +34,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
-        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(authRequest.getUsername(), authRequest.getPassword());
+    public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto authRequestDto) {
+        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(authRequestDto.getUsername(), authRequestDto.getPassword());
         Authentication authenticationResponse = authenticationManager.authenticate(authenticationRequest);
 
         // Once the authentication manager handles our authentication request, we need to store the auth details somewhere
         // That's where the SecurityContextHolder comes in
         SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
-        return new ResponseEntity<>("User logged in succesfully.", HttpStatus.OK);
+        String token = jwtProvider.generateToken(authenticationRequest);
+        return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
 
     }
 
