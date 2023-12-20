@@ -23,4 +23,9 @@ public class ClimbServiceImpl implements ClimbService {
     public List<Climb> getAllClimbs() {
         return climbRepo.findAll();
     }
+
+    @Override
+    public List<Climb> getClimbsByUsername(String username) {
+        return climbRepo.findByUserUsername(username);
+    }
 }

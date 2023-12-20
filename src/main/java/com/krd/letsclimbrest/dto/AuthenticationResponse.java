@@ -7,11 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class AuthRequestDto {
-
-    private String username;
-    private String password;
-
+@NoArgsConstructor
+public class AuthenticationResponse {
+    private String accessToken;
 }

@@ -1,7 +1,10 @@
 package com.krd.letsclimbrest.services;
 
-import com.krd.letsclimbrest.entities.User;
+import com.krd.letsclimbrest.dto.AuthenticationRequest;
+import com.krd.letsclimbrest.dto.AuthenticationResponse;
+import com.krd.letsclimbrest.dto.RegisterRequest;
 
 public interface AuthService {
-    User register(User user);
+    AuthenticationResponse register(RegisterRequest registerRequest);
+    AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest);
 }

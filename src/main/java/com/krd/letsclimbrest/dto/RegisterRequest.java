@@ -9,13 +9,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponseDto {
-    private String accessToken;
-    private String tokenType = "Bearer ";
+public class RegisterRequest {
 
-    public AuthResponseDto(String accessToken){
-        this.accessToken = accessToken;
-    }
-
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String username;
+    private String password;
 
 }

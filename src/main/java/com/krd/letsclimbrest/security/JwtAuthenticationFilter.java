@@ -4,67 +4,74 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 /**
  *
- * This class is used to define a new security filter for checking if there is a JWT in the request header
+ * This class is used to define a new security filter for intercepting all our requests and checking if there is a JWT in the request header
  * This is part of the security filter chain because we must check for the JWT as part of the authentication process BEFORE we allow access to our API
  *
  * To define this filter we are extending the OncePerRequestFilter class which requires us to override the doFilterInternal method
  */
+@Component // This tells spring we want this class to be a managed Spring Bean
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    @Autowired
-    JwtProvider tokenProvider;
-
+//    @Autowired
+//    JwtProvider tokenProvider;
+//
     @Autowired
     CustomUserDetailsService userDetailsService;
 
+    private final JwtService jwtService;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Get the JWT from the requests Authoirzation header
-        String token = getJwtFromRequest(request);
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        // If there was a token and it is valid
-        if(StringUtils.hasText(token) && tokenProvider.validateToken(token)){
+        // Get the authorization header from the intercepted request
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String username;
 
-            // Get the username from our JWT
-            String username = tokenProvider.getUsernameFromJwt(token);
+        // If the authorization header is either null or doesn't contain a bearer token we want to return early
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            // Use our userDetailsService to load the UserDetails object
+        // Extract only the token part from the auth header
+        jwt = authHeader.substring(7);
+
+        // Once we have the token, we want to extract the username from the token
+        username = jwtService.extractUsername(jwt);
+
+        // If the username from our token is not null and the user is not already authenticated in our Security Context
+        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+
+            // Get the user from our database using the username from the JWT
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
 
-            // Set the details of our authenticationToken
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            // Use our JwtService class to verify that the JWT is valid
+            if(jwtService.isTokenValid(jwt, userDetails)){
 
-            // Add the authenticationToken to our security context
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                // Update the Security Context
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
         }
 
-        // Execute our filter chain and then move on to the next filter
+        // Execute our filter
         filterChain.doFilter(request, response);
-    }
 
-    // This method looks at the HTTP Request Headers to retrieve the JWT
-    private String getJwtFromRequest(HttpServletRequest request){
-        String bearerToken = request.getHeader("Authorization");
-
-        // If a bearer token exists in the requests Authorization header
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-            // Return only the JWT part of the string
-            return bearerToken.substring(7, bearerToken.length());
-        }
-
-        // Otherwise return null if there was no bearer token in the requests Authorization header
-        return null;
     }
 }
