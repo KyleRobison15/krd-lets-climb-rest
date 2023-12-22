@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     // The method must return a User object with a username, password, and List of authorities.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<String> userRoles;
+        List<String> userRoles = new ArrayList<>();
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
         // Use our existing user repository to find a user in our DB by username
@@ -34,15 +34,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // If the user was not found, throw an exception with a message
         if(user == null){
-            throw new UsernameNotFoundException("This username: " + username + ". Does not exist");
+            throw new UsernameNotFoundException("This username: " + username + ", does not exist.");
         }
 
         // Next we must iterate over the list of roles for our user and create a new List<SimpleGrantedAuthorities>
         // Spring will use this list to manage the permissions each user has
         // For this application users will have 1 of 2 roles: user or admin
-        List<String> roles = new ArrayList<>();
-        roles.add(user.getRole());
-        userRoles = roles;
+        userRoles.add(user.getRole());
+
 
         for (String role : userRoles) {
             authorities.add(new SimpleGrantedAuthority(role));

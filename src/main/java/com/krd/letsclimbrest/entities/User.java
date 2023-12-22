@@ -2,6 +2,8 @@ package com.krd.letsclimbrest.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,10 +26,14 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
+    @Email
     private String email;
 
+    @NotNull
     private String username;
 
+    @NotNull
     private String password;
 
     @Column(name = "first_name")

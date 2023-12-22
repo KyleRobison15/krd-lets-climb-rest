@@ -1,12 +1,7 @@
 package com.krd.letsclimbrest.services;
 
-import com.krd.letsclimbrest.entities.User;
-
-import java.util.List;
+import com.krd.letsclimbrest.dto.ChangePasswordRequest;
 
 public interface UserService {
-    List<User> getAllUsers ();
-    User getUserByUsername(String username);
-    User getUserByEmail(String email);
-    void deleteUserById(int id);
+    void changePassword(ChangePasswordRequest request);
 }

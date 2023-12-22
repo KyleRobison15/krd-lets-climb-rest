@@ -1,6 +1,7 @@
 package com.krd.letsclimbrest.dto;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -13,6 +14,6 @@ public class ApiErrorCode {
 
     private String description;
 
-    private Integer httpStatus;
+    private Enum<HttpStatus> httpStatus;
 
 }

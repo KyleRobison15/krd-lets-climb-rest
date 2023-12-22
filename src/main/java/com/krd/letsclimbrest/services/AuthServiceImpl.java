@@ -4,6 +4,7 @@ import com.krd.letsclimbrest.dto.AuthenticationRequest;
 import com.krd.letsclimbrest.dto.AuthenticationResponse;
 import com.krd.letsclimbrest.dto.RegisterRequest;
 import com.krd.letsclimbrest.entities.User;
+import com.krd.letsclimbrest.exception.UsernameEmailAlreadyExistsException;
 import com.krd.letsclimbrest.repositories.UserRepository;
 import com.krd.letsclimbrest.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -31,6 +34,9 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public AuthenticationResponse register(RegisterRequest registerRequest) {
+
+        // Check the database for existing username or password and throw an exception if either are not unique
+        checkUsernameEmailExists(registerRequest);
 
         // Build our User
         User newUser = new User();
@@ -70,5 +76,28 @@ public class AuthServiceImpl implements AuthService{
         String generatedToken = jwtService.generateToken(user);
 
         return new AuthenticationResponse(generatedToken);
+    }
+
+    @Override
+    public void checkUsernameEmailExists(RegisterRequest registerRequest) {
+
+        String message = "USER_ALREADY_EXISTS";
+        String username = userRepo.findByUsername(registerRequest.getUsername()).getUsername();
+        String email = userRepo.findByEmail(registerRequest.getEmail()).getEmail();
+        Map<String, String> exceptionDetails = new HashMap<>();
+
+        // Check if there is already a user with the same username AND email
+        if(username != null && email != null){
+            exceptionDetails.put("username", "Username, " + registerRequest.getUsername() + " already exists.");
+            exceptionDetails.put("email", "Email, " + registerRequest.getEmail() + " already exists.");
+            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, registerRequest);
+        } else if (username != null){
+            exceptionDetails.put("username", "A user with this username already exists");
+            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, registerRequest);
+        } else if (email != null){
+            exceptionDetails.put("email", "A user with this email already exists");
+            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, registerRequest);
+        }
+
     }
 }
