@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AuxillaryServiceImpl implements AuxillaryService {
@@ -47,5 +49,12 @@ public class AuxillaryServiceImpl implements AuxillaryService {
     @Override
     public List<Danger> getAllDangers() {
         return dangerRepo.findAllByOrderByIdAsc();
+    }
+
+    @Override
+    public Map<String, Integer> getGradeMap() {
+        List<Grade> gradeList = gradeRepo.findAllByOrderByIdAsc();
+        Map<String, Integer> gradeMap = gradeList.stream().collect(Collectors.toMap(Grade::getName, Grade::getId));
+        return gradeMap;
     }
 }

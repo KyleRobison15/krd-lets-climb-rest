@@ -6,6 +6,7 @@ import com.krd.letsclimbrest.entities.Grade;
 import com.krd.letsclimbrest.entities.Style;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AuxillaryService {
 
@@ -13,5 +14,6 @@ public interface AuxillaryService {
     List<BoulderGrade> getAllBoulderGrades();
     List<Style> getAllStyles();
     List<Danger> getAllDangers();
+    Map<String, Integer> getGradeMap();
 
 }

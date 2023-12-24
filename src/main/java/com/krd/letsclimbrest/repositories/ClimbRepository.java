@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface ClimbRepository extends JpaRepository<Climb, Integer> {
 
+    List<Climb> findByUserUsername(String username);
     List<Climb> findByUserUsername(String username, Sort sort);
 
     Climb findClimbByIdAndUserUsername(Integer id, String username);

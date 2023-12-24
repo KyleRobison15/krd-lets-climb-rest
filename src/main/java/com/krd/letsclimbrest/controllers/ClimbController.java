@@ -30,7 +30,7 @@ public class ClimbController {
     private ClimbService climbSvc;
 
     @GetMapping("/climbs")
-    @Operation(summary = "Get a list of climbs for an authenticated user")
+    @Operation(summary = "Get a list of climbs for an authenticated user. Optional sort query params may be used.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
