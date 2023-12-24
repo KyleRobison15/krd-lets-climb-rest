@@ -90,7 +90,7 @@ public class ClimbController {
         UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // Get the climbs for this user from our database
-        Climb climb = climbSvc.getClimbById(id, currentUser.getUsername());
+        Climb climb = climbSvc.getClimbByIdAndUsername(id, currentUser.getUsername());
 
         return ResponseEntity.ok(climb);
 
@@ -125,7 +125,7 @@ public class ClimbController {
         UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // Get the climbs for this user from our database
-        climbSvc.deleteClimbById(id, currentUser.getUsername());
+        climbSvc.deleteClimbByIdAndUsername(id, currentUser.getUsername());
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
 
@@ -158,6 +158,41 @@ public class ClimbController {
         Climb createdClimb = climbSvc.createClimbForUser(climb, currentUser.getUsername());
 
         return new ResponseEntity<>(createdClimb, HttpStatus.CREATED);
+
+    }
+
+    @PutMapping("/climbs/{id}")
+    @Operation(summary = "Update an existing climb for a user.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The climb was successfully updated.",
+                    content = @Content(schema = @Schema(implementation = Climb.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "BAD_REQUEST",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "NOT_FOUND",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "INTERNAL_SERVER_ERROR",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+    })
+    public ResponseEntity<Object> updateClimb(@PathVariable Integer id, @Valid @RequestBody Climb climb) {
+
+        // Get the current signed-in user from our database
+        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Climb updatedClimb = climbSvc.updateClimbByIdAndUsername(id, currentUser.getUsername(), climb);
+
+        return new ResponseEntity<>(updatedClimb, HttpStatus.OK);
 
     }
 

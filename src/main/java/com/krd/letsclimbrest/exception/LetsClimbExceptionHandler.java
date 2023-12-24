@@ -1,5 +1,6 @@
 package com.krd.letsclimbrest.exception;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.krd.letsclimbrest.constants.ApiErrorConstants;
 import com.krd.letsclimbrest.dto.Error;
 import com.krd.letsclimbrest.dto.ErrorResponse;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,6 +52,28 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
         errorResponse.setApiErrorCode(ApiErrorConstants.VALIDATION_ERROR.getCode());
         errorResponse.setMessage(ApiErrorConstants.VALIDATION_ERROR.getDescription());
         errorResponse.setErrorDetails(errorList);
+
+        return new ResponseEntity<>(errorResponse, headers, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        List<Error> errorList = new ArrayList<>();
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        errorList.add(
+                Error.builder()
+                        .code(ex.getCause().getClass().getSimpleName())
+                        .target(request.getDescription(false).substring(4))
+                        .description(ex.getMessage())
+                        .build()
+        );
+
+        errorResponse.setApiErrorCode(ApiErrorConstants.MALFORMED_REQUEST_JSON.getCode());
+        errorResponse.setMessage(ApiErrorConstants.MALFORMED_REQUEST_JSON.getDescription());
+        errorResponse.setErrorDetails(errorList);
+
 
         return new ResponseEntity<>(errorResponse, headers, status);
     }
@@ -138,6 +162,32 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(ApiErrorConstants.AUTHENTICATION_FAILURE.getDescription())
                 .errorDetails(errorDetails)
                 .build();
+
+    }
+
+    /**
+     * Handle the UsernameEmailAlreadyExistsException
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(JsonParseException.class)
+    ErrorResponse handleJsonParseException(JsonParseException e) {
+
+        List<Error> errorList = new ArrayList<>();
+        ErrorResponse errorResponse = new ErrorResponse();
+
+            errorList.add(
+                    Error.builder()
+                            .code(e.getClass().getSimpleName())
+                            .target(e.getRequestPayloadAsString())
+                            .description(e.getMessage())
+                            .build()
+            );
+
+        errorResponse.setApiErrorCode(ApiErrorConstants.MALFORMED_REQUEST_JSON.getCode());
+        errorResponse.setMessage(ApiErrorConstants.MALFORMED_REQUEST_JSON.getDescription());
+        errorResponse.setErrorDetails(errorList);
+
+        return errorResponse;
 
     }
 

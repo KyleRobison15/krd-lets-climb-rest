@@ -8,7 +8,8 @@ public interface ClimbService {
 
     Climb createClimbForUser(Climb climb, String username);
     List<Climb> getClimbsByUserUsername(String username);
-    Climb getClimbById(Integer id, String username);
-    void deleteClimbById(Integer id, String username);
+    Climb getClimbByIdAndUsername(Integer id, String username);
+    void deleteClimbByIdAndUsername(Integer id, String username);
+    Climb updateClimbByIdAndUsername(Integer id, String username, Climb updatedClimb);
 
 }
