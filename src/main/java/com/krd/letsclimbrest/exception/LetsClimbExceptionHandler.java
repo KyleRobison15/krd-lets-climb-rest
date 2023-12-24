@@ -69,7 +69,7 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
             errorList.add(
                     Error.builder()
                             .code(e.getMessage())
-                            .target(e.getRequest().getClass().getSimpleName() + "/" + target)
+                            .target(e.getPath() + "/" + target)
                             .description(message)
                             .build()
             );
@@ -77,6 +77,33 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
 
         errorResponse.setApiErrorCode(ApiErrorConstants.VALIDATION_ERROR.getCode());
         errorResponse.setMessage(ApiErrorConstants.VALIDATION_ERROR.getDescription());
+        errorResponse.setErrorDetails(errorList);
+
+        return errorResponse;
+
+    }
+
+    /**
+     * Handle the UsernameEmailAlreadyExistsException
+     */
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    ErrorResponse handleNotFoundException(NotFoundException e) {
+        List<Error> errorList = new ArrayList<>();
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        e.getDetails().forEach((target, message) -> {
+            errorList.add(
+                    Error.builder()
+                            .code(e.getMessage())
+                            .target(e.getPath() + "/" + target)
+                            .description(message)
+                            .build()
+            );
+        });
+
+        errorResponse.setApiErrorCode(ApiErrorConstants.NOT_FOUND.getCode());
+        errorResponse.setMessage(ApiErrorConstants.NOT_FOUND.getDescription());
         errorResponse.setErrorDetails(errorList);
 
         return errorResponse;

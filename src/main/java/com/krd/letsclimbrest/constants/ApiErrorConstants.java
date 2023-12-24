@@ -28,6 +28,13 @@ public class ApiErrorConstants {
             .httpStatus(HttpStatus.BAD_REQUEST)
             .build();
 
+    public static final ApiErrorCode NOT_FOUND = ApiErrorCode
+            .builder()
+            .code("NOT_FOUND")
+            .description("The requested resource was not found.")
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .build();
+
 
     public static final ApiErrorCode MISSING_REQUIRED_PARAMETER = ApiErrorCode
             .builder()

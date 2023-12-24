@@ -58,6 +58,27 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Climb> climbs;
 
+    // Method to add a climb to a user's list of climbs
+    public boolean addClimb(Climb climb){
+        // Check first if the user's list of climbs is null
+        if(climbs == null){
+            climbs = new ArrayList<>();
+        }
+
+        // If the climb doesn't already exist in their list of climbs, add it to their list
+        // Also set the climb's user to this user
+        if(!climbs.contains(climb)){
+            climbs.add(climb);
+            climb.setUser(this);
+            // Return true if the climb was added
+            return true;
+        }
+
+        // If no climb was added, return false
+        return false;
+
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 

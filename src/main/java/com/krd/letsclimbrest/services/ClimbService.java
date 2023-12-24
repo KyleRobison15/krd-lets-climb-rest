@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface ClimbService {
 
-    Climb createClimb(Climb climb);
+    Climb createClimbForUser(Climb climb, String username);
     List<Climb> getClimbsByUserUsername(String username);
+    Climb getClimbById(Integer id, String username);
+    void deleteClimbById(Integer id, String username);
 
 }

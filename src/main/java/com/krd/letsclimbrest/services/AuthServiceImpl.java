@@ -82,6 +82,7 @@ public class AuthServiceImpl implements AuthService {
     public void checkUsernameEmailExists(RegisterRequest registerRequest) {
 
         String message = "USER_ALREADY_EXISTS";
+        String path = "/register";
         String username = userRepo.findByUsername(registerRequest.getUsername()).getUsername();
         String email = userRepo.findByEmail(registerRequest.getEmail()).getEmail();
         Map<String, String> exceptionDetails = new HashMap<>();
@@ -90,13 +91,13 @@ public class AuthServiceImpl implements AuthService {
         if(username != null && email != null){
             exceptionDetails.put("username", "Username, " + registerRequest.getUsername() + " already exists.");
             exceptionDetails.put("email", "Email, " + registerRequest.getEmail() + " already exists.");
-            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, registerRequest);
+            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, path);
         } else if (username != null){
             exceptionDetails.put("username", "A user with this username already exists");
-            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, registerRequest);
+            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, path);
         } else if (email != null){
             exceptionDetails.put("email", "A user with this email already exists");
-            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, registerRequest);
+            throw new UsernameEmailAlreadyExistsException(message, exceptionDetails, path);
         }
 
     }

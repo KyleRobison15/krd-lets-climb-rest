@@ -40,7 +40,12 @@ public class AuthController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Bad Request",
+                    description = "BAD_REQUEST",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "INTERNAL_SERVER_ERROR",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
     })
@@ -62,7 +67,12 @@ public class AuthController {
                     responseCode = "403",
                     description = "Invalid credentials. The user was not authenticated.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-            )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "INTERNAL_SERVER_ERROR",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
     })
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authRequest) {
         AuthenticationResponse authResponse = authService.authenticate(authRequest);
