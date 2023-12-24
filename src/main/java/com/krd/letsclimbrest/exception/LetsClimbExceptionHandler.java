@@ -23,7 +23,6 @@ import java.util.List;
 @Slf4j
 public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
 
-
     /**
      * Handle the MethodArugmentNotValidException
      * Because we are extending the ResponseEntityExceptionHandler class we can customize the error handling by overriding this method
@@ -53,6 +52,12 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
         errorResponse.setErrorDetails(errorList);
 
         return new ResponseEntity<>(errorResponse, headers, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        ex.printStackTrace();
+        return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
     /**

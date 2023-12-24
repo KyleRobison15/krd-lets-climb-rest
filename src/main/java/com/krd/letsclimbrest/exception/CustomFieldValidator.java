@@ -16,6 +16,6 @@ public class CustomFieldValidator implements ConstraintValidator<ValidFieldValue
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value == null || value.length() == 0 || allowedValues.contains(value);
+        return value == null || allowedValues.contains(value);
     }
 }
