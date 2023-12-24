@@ -1,6 +1,5 @@
 package com.krd.letsclimbrest.exception;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.krd.letsclimbrest.constants.ApiErrorConstants;
 import com.krd.letsclimbrest.dto.Error;
 import com.krd.letsclimbrest.dto.ErrorResponse;
@@ -166,25 +165,27 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Handle the UsernameEmailAlreadyExistsException
+     * Handle the SortQueryException
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(JsonParseException.class)
-    ErrorResponse handleJsonParseException(JsonParseException e) {
+    @ExceptionHandler(SortQueryException.class)
+    ErrorResponse handleSortQueryException(SortQueryException e) {
 
         List<Error> errorList = new ArrayList<>();
         ErrorResponse errorResponse = new ErrorResponse();
 
+        e.getDetails().forEach((target, message) -> {
             errorList.add(
                     Error.builder()
-                            .code(e.getClass().getSimpleName())
-                            .target(e.getRequestPayloadAsString())
-                            .description(e.getMessage())
+                            .code(e.getMessage())
+                            .target(e.getPath() + target)
+                            .description(message)
                             .build()
             );
+        });
 
-        errorResponse.setApiErrorCode(ApiErrorConstants.MALFORMED_REQUEST_JSON.getCode());
-        errorResponse.setMessage(ApiErrorConstants.MALFORMED_REQUEST_JSON.getDescription());
+        errorResponse.setApiErrorCode(ApiErrorConstants.SORT_QUERY_ERROR.getCode());
+        errorResponse.setMessage(ApiErrorConstants.SORT_QUERY_ERROR.getDescription());
         errorResponse.setErrorDetails(errorList);
 
         return errorResponse;

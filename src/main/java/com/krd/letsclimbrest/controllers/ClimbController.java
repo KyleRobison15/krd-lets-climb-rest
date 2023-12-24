@@ -48,13 +48,14 @@ public class ClimbController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
     })
-    public ResponseEntity<List<Climb>> getClimbs() {
+    public ResponseEntity<List<Climb>> getClimbs(@RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+                                                 @RequestParam(name = "sortOrder", defaultValue = "ASC") String sortOrder) {
 
         // Get the current signed-in user from our database
         UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // Get the climbs for this user from our database
-        List<Climb> userClimbs = climbSvc.getClimbsByUserUsername(currentUser.getUsername());
+        List<Climb> userClimbs = climbSvc.getClimbsByUserUsername(currentUser.getUsername(), sortBy, sortOrder);
 
         return ResponseEntity.ok(userClimbs);
 

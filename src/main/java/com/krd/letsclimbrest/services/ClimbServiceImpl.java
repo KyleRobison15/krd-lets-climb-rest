@@ -3,10 +3,13 @@ package com.krd.letsclimbrest.services;
 import com.krd.letsclimbrest.entities.Climb;
 import com.krd.letsclimbrest.entities.User;
 import com.krd.letsclimbrest.exception.NotFoundException;
+import com.krd.letsclimbrest.exception.SortQueryException;
 import com.krd.letsclimbrest.repositories.ClimbRepository;
 import com.krd.letsclimbrest.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,8 +30,30 @@ public class ClimbServiceImpl implements ClimbService {
     UserRepository userRepo;
 
     @Override
-    public List<Climb> getClimbsByUserUsername(String username) {
-        return climbRepo.findByUserUsername(username);
+    public List<Climb> getClimbsByUserUsername(String username, String sortBy, String sortOrder) {
+
+        List<Climb> climbs;
+
+        try {
+            Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+            climbs = climbRepo.findByUserUsername(username, sort);
+        }
+        // Catch the PropertyReferenceException when the sortBy field is not present in Climb
+        // Throw custom sorting exception
+        catch (PropertyReferenceException e) {
+            Map<String, String> exceptionDetails = new HashMap<>();
+            exceptionDetails.put(e.getPropertyName(),"You cannot sort by '" + sortBy + "' because that field does not exist on the Climb entity.");
+            throw new SortQueryException("FIELD_NOT_FOUND", exceptionDetails, "/climbs?sortBy=");
+        }
+        // Catch the IllegalArgumentException when the sortOrder ENUM is not present in Sort
+        // Throw custom sorting exception
+        catch (IllegalArgumentException e) {
+            Map<String, String> exceptionDetails = new HashMap<>();
+            exceptionDetails.put(sortOrder,"sortOrder must be either 'ASC' or 'DESC'.");
+            throw new SortQueryException("INVALID_SORT_ORDER", exceptionDetails, "/climbs?sortOrder=");
+        }
+
+        return climbs;
     }
 
     @Override

@@ -35,6 +35,12 @@ public class ApiErrorConstants {
             .httpStatus(HttpStatus.NOT_FOUND)
             .build();
 
+    public static final ApiErrorCode SORT_QUERY_ERROR = ApiErrorCode
+            .builder()
+            .code("SORT_QUERY_ERROR")
+            .description("There is an error in the sort query.")
+            .httpStatus(HttpStatus.BAD_REQUEST)
+            .build();
 
     public static final ApiErrorCode MISSING_REQUIRED_PARAMETER = ApiErrorCode
             .builder()
