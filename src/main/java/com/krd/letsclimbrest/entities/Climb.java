@@ -2,6 +2,7 @@ package com.krd.letsclimbrest.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.krd.letsclimbrest.exception.ValidFieldValues;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -17,6 +18,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -118,6 +121,31 @@ public class Climb {
     @JsonBackReference
     @JsonIgnore
     private User user;
+
+    @OneToMany(mappedBy = "climb")
+    @JsonManagedReference
+    private List<Attempt> attempts;
+
+    // Method to add an attempt to a user's list of attempts for a given climb
+    public boolean addAttempt(Attempt attempt){
+        // Check first if the user's list of climbs is null
+        if(attempts == null){
+            attempts = new ArrayList<>();
+        }
+
+        // If the attempt doesn't already exist in this climb's list of attempts, add it to the list
+        // Also set the attempt's climb to this climb
+        if(!attempts.contains(attempt)){
+            attempts.add(attempt);
+            attempt.setClimb(this);
+            // Return true if the attempt was added
+            return true;
+        }
+
+        // If no attempt was added, return false
+        return false;
+
+    }
 
     @Override
     public boolean equals(Object o) {
