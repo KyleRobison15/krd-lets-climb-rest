@@ -102,6 +102,7 @@ public class Climb {
     private LocalDate firstSendDate;
 
     @Column(name = "image_path")
+    @Schema(description = "The image file path.")
     private String imagePath;
 
     @Column(name = "creation_ts")
