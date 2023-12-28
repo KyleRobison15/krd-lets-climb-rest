@@ -33,6 +33,7 @@ public class ClimbServiceImpl implements ClimbService {
     @Autowired
     AuxillaryService auxSvc;
 
+
     @Override
     public List<Climb> getClimbsByUserUsername(String username, String sortBy, String sortOrder) {
 
@@ -157,7 +158,8 @@ public class ClimbServiceImpl implements ClimbService {
         existingClimb.setIsTicked(updatedClimb.getIsTicked());
         existingClimb.setStars(updatedClimb.getStars());
         existingClimb.setFirstSendDate(updatedClimb.getFirstSendDate());
-        existingClimb.setImagePath(updatedClimb.getImagePath());
+        existingClimb.setImageFilePath(updatedClimb.getImageFilePath());
+        existingClimb.setImageFileName(updatedClimb.getImageFileName());
         existingClimb.setRevisionTs(LocalDateTime.now(ZoneOffset.UTC));
         existingClimb.setUser(currentUser);
 
