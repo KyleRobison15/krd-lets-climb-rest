@@ -1,8 +1,6 @@
 package com.krd.letsclimbrest.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -43,13 +42,48 @@ public class Attempt {
 
     @ManyToOne
     @JoinColumn(name = "climb_id")
-    @JsonBackReference
     @JsonIgnore
     private Climb climb;
 
-    @OneToMany(mappedBy = "attempt")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "attempt", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<AttemptImage> attemptImages;
+
+    // Method to add an image to a user's list of attempt images for a given climb
+    public boolean addImage(AttemptImage image){
+        // Check first if the user's list of climbs is null
+        if(attemptImages == null){
+            attemptImages = new ArrayList<>();
+        }
+
+        // If the attempt doesn't already exist in this climb's list of attempts, add it to the list
+        // Also set the attempt's climb to this climb
+        if(!attemptImages.contains(image)){
+            attemptImages.add(image);
+            image.setAttempt(this);
+            // Return true if the attempt was added
+            return true;
+        }
+
+        // If no attempt was added, return false
+        return false;
+
+    }
+
+    // Method to add an attempt to a user's list of attempts for a given climb
+    public boolean removeImage(AttemptImage image){
+
+        // If the attempt doesn't already exist in this climb's list of attempts, add it to the list
+        // Also set the attempt's climb to this climb
+        if(attemptImages != null && attemptImages.contains(image)){
+            attemptImages.remove(image);
+            // Return true if the attempt was removed
+            return true;
+        }
+
+        // Return false if no attempt was removed
+        return false;
+
+    }
 
 
 }

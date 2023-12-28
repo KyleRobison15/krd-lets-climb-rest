@@ -51,8 +51,11 @@ public class User implements UserDetails {
 
     private String role;
 
-    @Column(name = "image_path")
-    private String imagePath;
+    @Column(name = "image_file_path")
+    private String imageFilePath;
+
+    @Column(name = "image_file_name")
+    private String imageFileName;
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
