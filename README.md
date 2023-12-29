@@ -81,10 +81,16 @@ One of the coolest things about this API is that it is secured using Spring Secu
 
 To construct the architecture shown above, I implemented the following:
 ### SecurityConfig
-The SecurityConfig class is how we defined the Spring Beans required by Spring Security for authenticating requests to our API. The most important of them being the SecurityFilterChain bean, which utilizes the chain of responsiblity pattern that chains together security filters
+The SecurityConfig class is where I defined the Spring Beans required by Spring Security for authenticating requests to our API. The most important of them being the SecurityFilterChain bean, which utilizes the chain of responsiblity pattern to chains together security filters that should be executed for each request. The JwtAuthenticationFilter is added to this filter chain in order to validate the JWT provided in the request header.
+
 ### CustomUserDetailsService
+A UserDetailsService is an interface that essentially tells Spring Security how to look up a User from your database. For this API, I created a CustomUserDetailsService concrete implementation of this interface, which overrides the loadUserByUsername method to look up a user from the letsclimbdb MySQL by username.
+
 ### JwtService
+The JwtService is a service class that can generate, validate and extract claims from JWTs. When a user registers via the /api/v1/auth/register endpoint, this service is called to generate and return a JWT to the newly registered user.
+
 ### JwtAuthenticationFilter
+The JwtAuthenticationFilter is an additional filter I added to the SecurityFilterChain that, when executed, is responsible for extracting the JWT from the request's auhtorization header, extracting the user's username from the JWT using the secret signing key that the JWT was created with, and finally update the security context holder with the authenticated user's UserDetails.  Once this filter is executed, the request will either be rejected with a 403 forbidden response, or the request will be authenticated and the validated user information will be added to the security context.
 
 ## Technologies, Libraries and Patterns Used
 * Java
