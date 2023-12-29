@@ -49,6 +49,13 @@ public class ApiErrorConstants {
             .httpStatus(HttpStatus.BAD_REQUEST)
             .build();
 
+    public static final ApiErrorCode DUPLICATION_ERROR = ApiErrorCode
+            .builder()
+            .code("DUPLICATION_ERROR")
+            .description("A duplicate resource has been detected. No duplicates are allowed.")
+            .httpStatus(HttpStatus.BAD_REQUEST)
+            .build();
+
     public static final ApiErrorCode MISSING_REQUIRED_PARAMETER = ApiErrorCode
             .builder()
             .code("MISSING_REQUIRED_PARAMETER")

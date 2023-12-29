@@ -215,6 +215,62 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Handle the DuplicateClimbException
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DuplicateClimbException.class)
+    ErrorResponse handleDuplicateClimbException(DuplicateClimbException e) {
+
+        List<Error> errorList = new ArrayList<>();
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        e.getDetails().forEach((target, message) -> {
+            errorList.add(
+                    Error.builder()
+                            .code(e.getMessage())
+                            .target(e.getPath())
+                            .description(message)
+                            .build()
+            );
+        });
+
+        errorResponse.setApiErrorCode(ApiErrorConstants.DUPLICATION_ERROR.getCode());
+        errorResponse.setMessage(ApiErrorConstants.DUPLICATION_ERROR.getDescription());
+        errorResponse.setErrorDetails(errorList);
+
+        return errorResponse;
+
+    }
+
+    /**
+     * Handle the InvalidGradeException
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidGradeException.class)
+    ErrorResponse handleInvalidGradeException(InvalidGradeException e) {
+
+        List<Error> errorList = new ArrayList<>();
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        e.getDetails().forEach((target, message) -> {
+            errorList.add(
+                    Error.builder()
+                            .code(e.getMessage())
+                            .target(e.getPath())
+                            .description(message)
+                            .build()
+            );
+        });
+
+        errorResponse.setApiErrorCode(ApiErrorConstants.VALIDATION_ERROR.getCode());
+        errorResponse.setMessage(ApiErrorConstants.VALIDATION_ERROR.getDescription());
+        errorResponse.setErrorDetails(errorList);
+
+        return errorResponse;
+
+    }
+
+    /**
      * Handle the InvalidFilterException
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)

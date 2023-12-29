@@ -1,7 +1,9 @@
 package com.krd.letsclimbrest.controllers;
 
+import com.krd.letsclimbrest.dto.ClimbRequest;
 import com.krd.letsclimbrest.dto.ErrorResponse;
 import com.krd.letsclimbrest.entities.Climb;
+import com.krd.letsclimbrest.exception.InvalidGradeException;
 import com.krd.letsclimbrest.services.ClimbService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +23,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -53,8 +57,8 @@ public class ClimbController {
     })
     public ResponseEntity<List<Climb>> getClimbs(@Parameter(name = "sortBy", description = "Optionally sort climbs by the specified field. Default behavior is to sort by when the climb was added. Example: grade")
                                                  @RequestParam(defaultValue = "creationTs", required = false) String sortBy,
-                                                 @Parameter(name = "sortOrder", description = "Optionally choose the sort order of ASC or DESC. Default is ASC.")
-                                                 @RequestParam(defaultValue = "ASC", required = false) String sortOrder,
+                                                 @Parameter(name = "sortOrder", description = "Optionally choose the sort order of ASC or DESC. Default is DESC.")
+                                                 @RequestParam(defaultValue = "DESC", required = false) String sortOrder,
                                                  @Parameter(name = "grade", description = "Optionally filter climbs by the specified Yosemite Decimal System grade. Example: 5.10b")
                                                  @RequestParam(required = false) String grade,
                                                  @Parameter(name = "boulderGrade", description = "Optionally filter climbs by the specified V-Scale bouldering grade. Example: V4")
@@ -142,12 +146,29 @@ public class ClimbController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             ),
     })
-    public ResponseEntity<Object> createClimb(@Valid @RequestBody Climb climb) {
+    public ResponseEntity<Object> createClimb(@Valid @RequestBody ClimbRequest climbDto) {
+
+        // Work around to default boulder grade to null for swagger
+        if(climbDto.getBoulderGrade().equals("null")){
+            climbDto.setBoulderGrade(null);
+        }
+
+        // Work around to default danger to null for swagger
+        if(climbDto.getDanger().equals("null")){
+            climbDto.setDanger(null);
+        }
+
+        if(climbDto.getGrade() != null && climbDto.getBoulderGrade() != null){
+            Map<String, String> exceptionDetails = new HashMap<>();
+            exceptionDetails.put("", "Climbs cannot have BOTH a grade AND boulderGrade. If the climb is a boulder route, only include the boulderGrade and set the grade to null. If the route is not a boulder route, only include the grade and set boulderGrade to null.");
+            throw new InvalidGradeException("INVALID_GRADE", exceptionDetails, "/climbs");
+        }
+
 
         // Get the current signed-in user from our database
         UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Climb createdClimb = climbSvc.createClimbForUser(climb, currentUser.getUsername());
+        Climb createdClimb = climbSvc.createClimbForUser(climbDto, currentUser.getUsername());
 
         return new ResponseEntity<>(createdClimb, HttpStatus.CREATED);
 

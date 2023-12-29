@@ -16,4 +16,6 @@ public interface ClimbRepository extends JpaRepository<Climb, Integer>, JpaSpeci
 
     boolean existsByIdAndUserUsername(Integer id, String username);
 
+    boolean existsByNameAndCragNameAndUserUsername(String name, String cragName, String username);
+
 }

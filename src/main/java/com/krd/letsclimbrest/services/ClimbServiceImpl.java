@@ -1,9 +1,11 @@
 package com.krd.letsclimbrest.services;
 
 import com.krd.letsclimbrest.comparators.GradeComparator;
+import com.krd.letsclimbrest.dto.ClimbRequest;
 import com.krd.letsclimbrest.entities.Attempt;
 import com.krd.letsclimbrest.entities.Climb;
 import com.krd.letsclimbrest.entities.User;
+import com.krd.letsclimbrest.exception.DuplicateClimbException;
 import com.krd.letsclimbrest.exception.NotFoundException;
 import com.krd.letsclimbrest.exception.SortQueryException;
 import com.krd.letsclimbrest.repositories.ClimbRepository;
@@ -82,27 +84,45 @@ public class ClimbServiceImpl implements ClimbService {
     }
 
     @Override
-    public Climb createClimbForUser(Climb climb, String username) {
+    public Climb createClimbForUser(ClimbRequest climbDto, String username) {
+
+        // Check first if this climb already exists for the user
+        if(climbRepo.existsByNameAndCragNameAndUserUsername(climbDto.getName(), climbDto.getCragName(), username)){
+            Map<String, String> exceptionDetails = new HashMap<>();
+            exceptionDetails.put("name+cragName", "Duplicate climb detected. A climb with name, " + climbDto.getName() + " already exists for crag, " + climbDto.getCragName() + ".");
+            throw new DuplicateClimbException("DUPLICATE_CLIMB", exceptionDetails, "/climbs");
+        }
+
+        // Build a new climb using the climbDto from the request
+        Climb newClimb = Climb.builder()
+                .name(climbDto.getName()).grade(climbDto.getGrade()).boulderGrade(climbDto.getBoulderGrade())
+                .style(climbDto.getStyle()).pitches(climbDto.getPitches()).danger(climbDto.getDanger())
+                .description(climbDto.getDescription()).stateAbbreviation(climbDto.getStateAbbreviation()).areaName(climbDto.getAreaName())
+                .cragName(climbDto.getCragName()).cragLongitude(climbDto.getCragLongitude()).cragLatitude(climbDto.getCragLatitude())
+                .isTicked(climbDto.getIsTicked()).stars(climbDto.getStars()).firstSendDate(climbDto.getFirstSendDate())
+                .imageFilePath(climbDto.getImageFilePath()).imageFileName(climbDto.getImageFileName())
+                .build();
+
 
         // Get the current user
         // I am not performing any exception handling here because the user must be authenticated first before they get to this point
         User user = userRepo.findByUsername(username);
 
         // Update the creationTs and revisionTs fields
-        climb.setCreationTs(LocalDateTime.now(ZoneOffset.UTC));
-        climb.setRevisionTs(LocalDateTime.now(ZoneOffset.UTC));
+        newClimb.setCreationTs(LocalDateTime.now(ZoneOffset.UTC));
+        newClimb.setRevisionTs(LocalDateTime.now(ZoneOffset.UTC));
 
-        // If attempts is null, set attempts to an empty array list
-        if(climb.getAttempts() == null){
+        // Set attempts to an empty array list
+        if(newClimb.getAttempts() == null){
             List<Attempt> attempts = new ArrayList<>();
-            climb.setAttempts(attempts);
+            newClimb.setAttempts(attempts);
         }
 
         // Add the climb to the user's list of climbs
-        user.addClimb(climb);
+        user.addClimb(newClimb);
         userRepo.saveAndFlush(user);
 
-        return climbRepo.save(climb);
+        return climbRepo.save(newClimb);
 
     }
 

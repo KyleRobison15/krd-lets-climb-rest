@@ -28,6 +28,7 @@ import java.util.Objects;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@Builder
 @Schema(description = "Representation of a Climb.")
 public class Climb {
 
