@@ -75,7 +75,16 @@ In my opinion, no API is complete without stellar exception handling that return
 I have created several custom exceptions for notifying a Global Exception Handler that returns error responses in this format.
 
 ## Sring Security using JSON Web Tokens
-![image](https://github.com/KyleRobison15/krd-lets-climb-rest/assets/81257957/15216bf9-1d0d-4b72-b30e-144b4586b512)
+One of the coolest things about this API is that it is secured using Spring Security 6 and JSON Web Token authentication. This means that in order to access any of the secured endpoints of this API, a valid JSON Web Token must be sent in the Authorization header of the request. Here is a nice diagram that illustrates how the authentication works:
+
+![image](https://github.com/KyleRobison15/krd-lets-climb-rest/assets/81257957/ff40f1ea-edfa-4579-9893-046444d7b408)
+
+To construct the architecture shown above, I implemented the following:
+### SecurityConfig
+The SecurityConfig class is how we defined the Spring Beans required by Spring Security for authenticating requests to our API. The most important of them being the SecurityFilterChain bean, which utilizes the chain of responsiblity pattern that chains together security filters
+### CustomUserDetailsService
+### JwtService
+### JwtAuthenticationFilter
 
 ## Technologies, Libraries and Patterns Used
 * Java
