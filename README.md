@@ -3,13 +3,13 @@
 View the detailed API Docs here: http://localhost:8080/swagger-ui/index.html
 
 Quick Links:
-*[Overview](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#overview)
-*[Database](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#database)
-*[REST Endpoints](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#rest-endpoints)
-*[Filtering and Sorting](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#filtering-and-sorting)
-*[Uniform Exception Handling](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#uniform-exception-handling)
-*[Spring Security Using JSON Web Tokens](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#sring-security-using-json-web-tokens)
-*[Technologies Used](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#technologies-libraries-and-patterns-used)
+* [Overview](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#overview)
+* [Database](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#database)
+* [REST Endpoints](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#rest-endpoints)
+* [Filtering and Sorting](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#filtering-and-sorting)
+* [Uniform Exception Handling](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#uniform-exception-handling)
+* [Spring Security Using JSON Web Tokens](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#sring-security-using-json-web-tokens)
+* [Technologies Used](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#technologies-libraries-and-patterns-used)
 
 ## Overview
 This REST API serves as the backbone for the Let's Climb full stack web application. Let's Climb is a utlity appication that allows users to manage rock climbs by:
