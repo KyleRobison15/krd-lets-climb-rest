@@ -42,6 +42,13 @@ public class ApiErrorConstants {
             .httpStatus(HttpStatus.BAD_REQUEST)
             .build();
 
+    public static final ApiErrorCode INVALID_FILTER_EXPRESSION = ApiErrorCode
+            .builder()
+            .code("INVALID_FILTER_EXPRESSION")
+            .description("There is an error with one of the filter expressions")
+            .httpStatus(HttpStatus.BAD_REQUEST)
+            .build();
+
     public static final ApiErrorCode MISSING_REQUIRED_PARAMETER = ApiErrorCode
             .builder()
             .code("MISSING_REQUIRED_PARAMETER")
@@ -52,7 +59,7 @@ public class ApiErrorConstants {
     public static final ApiErrorCode MALFORMED_REQUEST_JSON = ApiErrorCode
             .builder()
             .code("MALFORMED_REQUEST_JSON")
-            .description("The request JSON is not well formed.")
+            .description("The request JSON is not well formed. Review the JSON that was submitted in the request for any errors.")
             .httpStatus(HttpStatus.BAD_REQUEST)
             .build();
 

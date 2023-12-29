@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -51,6 +52,27 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
         errorResponse.setApiErrorCode(ApiErrorConstants.VALIDATION_ERROR.getCode());
         errorResponse.setMessage(ApiErrorConstants.VALIDATION_ERROR.getDescription());
         errorResponse.setErrorDetails(errorList);
+
+        return new ResponseEntity<>(errorResponse, headers, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        List<Error> errorList = new ArrayList<>();
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        errorList.add(
+                Error.builder()
+                        .code("INVALID_JSON")
+                        .target(request.getDescription(false).substring(4))
+                        .description(ex.getMessage())
+                        .build()
+        );
+
+        errorResponse.setApiErrorCode(ApiErrorConstants.MALFORMED_REQUEST_JSON.getCode());
+        errorResponse.setMessage(ApiErrorConstants.MALFORMED_REQUEST_JSON.getDescription());
+        errorResponse.setErrorDetails(errorList);
+
 
         return new ResponseEntity<>(errorResponse, headers, status);
     }
@@ -186,6 +208,60 @@ public class LetsClimbExceptionHandler extends ResponseEntityExceptionHandler {
 
         errorResponse.setApiErrorCode(ApiErrorConstants.SORT_QUERY_ERROR.getCode());
         errorResponse.setMessage(ApiErrorConstants.SORT_QUERY_ERROR.getDescription());
+        errorResponse.setErrorDetails(errorList);
+
+        return errorResponse;
+
+    }
+
+    /**
+     * Handle the InvalidFilterException
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidFilterException.class)
+    ErrorResponse handleInvalidFilterException(InvalidFilterException e) {
+
+        List<Error> errorList = new ArrayList<>();
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        e.getDetails().forEach((target, message) -> {
+            errorList.add(
+                    Error.builder()
+                            .code(e.getMessage())
+                            .target(target)
+                            .description(message)
+                            .build()
+            );
+        });
+
+        errorResponse.setApiErrorCode(ApiErrorConstants.INVALID_FILTER_EXPRESSION.getCode());
+        errorResponse.setMessage(ApiErrorConstants.INVALID_FILTER_EXPRESSION.getDescription());
+        errorResponse.setErrorDetails(errorList);
+
+        return errorResponse;
+
+    }
+
+    /**
+     * Handle all other exceptions
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    ErrorResponse handleDefaultException(Exception e) {
+
+        List<Error> errorList = new ArrayList<>();
+        ErrorResponse errorResponse = new ErrorResponse();
+
+            errorList.add(
+                    Error.builder()
+                            .code("INTERNAL_SERVER_ERROR")
+                            .target("/api/v1")
+                            .description(e.getMessage())
+                            .build()
+            );
+
+        errorResponse.setApiErrorCode(ApiErrorConstants.INTERNAL_SERVER_ERROR.getCode());
+        errorResponse.setMessage(ApiErrorConstants.INTERNAL_SERVER_ERROR.getDescription());
         errorResponse.setErrorDetails(errorList);
 
         return errorResponse;

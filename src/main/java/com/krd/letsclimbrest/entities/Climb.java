@@ -2,7 +2,6 @@ package com.krd.letsclimbrest.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.krd.letsclimbrest.exception.ValidFieldValues;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -26,7 +25,6 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @DynamicInsert
 @DynamicUpdate
@@ -130,7 +128,6 @@ public class Climb {
     private User user;
 
     @OneToMany(mappedBy = "climb", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonManagedReference
     private List<Attempt> attempts;
 
     // Method to add an attempt to a user's list of attempts for a given climb

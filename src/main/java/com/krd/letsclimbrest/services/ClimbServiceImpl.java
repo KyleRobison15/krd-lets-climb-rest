@@ -1,6 +1,7 @@
 package com.krd.letsclimbrest.services;
 
 import com.krd.letsclimbrest.comparators.GradeComparator;
+import com.krd.letsclimbrest.entities.Attempt;
 import com.krd.letsclimbrest.entities.Climb;
 import com.krd.letsclimbrest.entities.User;
 import com.krd.letsclimbrest.exception.NotFoundException;
@@ -10,11 +11,13 @@ import com.krd.letsclimbrest.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,52 +36,20 @@ public class ClimbServiceImpl implements ClimbService {
     @Autowired
     AuxillaryService auxSvc;
 
-
     @Override
-    public List<Climb> getClimbsByUserUsername(String username, String sortBy, String sortOrder) {
-
-        List<Climb> climbs;
+    public List<Climb> getFilteredAndSortedClimbsByUserUsername(String username, String sortBy, String sortOrder, String grade, String boulderGrade,
+                                                       String style, String pitchesExpression, String danger, String stateAbbreviation,
+                                                       String areaName, String cragName, Boolean isTicked, String starsExpression) {
+        // Build up our filter specification
+        Specification<Climb> filterSpec = buildFilter(username, grade, boulderGrade, style, pitchesExpression, danger, stateAbbreviation, areaName, cragName, isTicked, starsExpression);
 
         // First check if sortBy query requires sorting by grades
         if (sortBy.equals("grade")) {
-
-            // Sort grades using the custom comparator and sortOrder query param
-            try {
-                climbs = climbRepo.findByUserUsername(username);
-                climbs.sort(new GradeComparator(auxSvc, Sort.Direction.fromString(sortOrder)));
-            }
-            // Catch the IllegalArgumentException when the sortOrder ENUM is not present in Sort
-            // Throw custom sorting exception
-            catch (IllegalArgumentException e) {
-                Map<String, String> exceptionDetails = new HashMap<>();
-                exceptionDetails.put(sortOrder, "sortOrder must be either 'ASC' or 'DESC'.");
-                throw new SortQueryException("INVALID_SORT_ORDER", exceptionDetails, "/climbs?sortOrder=");
-            }
-
-            return climbs;
+            return sortClimbsByGrade(filterSpec, sortOrder);
         }
 
         // If sortBy is anything other than "grade", then sort naturally
-        try {
-            Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
-            climbs = climbRepo.findByUserUsername(username, sort);
-        }
-        // Catch the PropertyReferenceException when the sortBy field is not present in Climb
-        // Throw custom sorting exception
-        catch (PropertyReferenceException e) {
-            Map<String, String> exceptionDetails = new HashMap<>();
-            exceptionDetails.put(e.getPropertyName(), "You cannot sort by '" + sortBy + "' because that field does not exist on the Climb entity.");
-            throw new SortQueryException("FIELD_NOT_FOUND", exceptionDetails, "/climbs?sortBy=");
-        }
-        // Catch the IllegalArgumentException when the sortOrder ENUM is not present in Sort
-        // Throw custom sorting exception
-        catch (IllegalArgumentException e) {
-            Map<String, String> exceptionDetails = new HashMap<>();
-            exceptionDetails.put(sortOrder, "sortOrder must be either 'ASC' or 'DESC'.");
-            throw new SortQueryException("INVALID_SORT_ORDER", exceptionDetails, "/climbs?sortOrder=");
-        }
-
-        return climbs;
+        return sortClimbs(filterSpec, sortBy, sortOrder);
     }
 
     @Override
@@ -120,6 +91,12 @@ public class ClimbServiceImpl implements ClimbService {
         // Update the creationTs and revisionTs fields
         climb.setCreationTs(LocalDateTime.now(ZoneOffset.UTC));
         climb.setRevisionTs(LocalDateTime.now(ZoneOffset.UTC));
+
+        // If attempts is null, set attempts to an empty array list
+        if(climb.getAttempts() == null){
+            List<Attempt> attempts = new ArrayList<>();
+            climb.setAttempts(attempts);
+        }
 
         // Add the climb to the user's list of climbs
         user.addClimb(climb);
@@ -165,6 +142,124 @@ public class ClimbServiceImpl implements ClimbService {
 
         // Save the updated climb to the global list of climbs
         return climbRepo.saveAndFlush(existingClimb);
+    }
+
+    private List<Climb> sortClimbsByGrade(Specification<Climb> filterSpec, String sortOrder){
+
+        List<Climb> filteredAndSortedClimbs;
+        // Sort grades using the custom comparator and sortOrder query param
+        try {
+            filteredAndSortedClimbs = climbRepo.findAll(filterSpec);
+            filteredAndSortedClimbs.sort(new GradeComparator(auxSvc, Sort.Direction.fromString(sortOrder)));
+        }
+        // Catch the IllegalArgumentException when the sortOrder ENUM is not present in Sort
+        // Throw custom sorting exception
+        catch (IllegalArgumentException e) {
+            Map<String, String> exceptionDetails = new HashMap<>();
+            exceptionDetails.put(sortOrder, "sortOrder must be either 'ASC' or 'DESC'.");
+            throw new SortQueryException("INVALID_SORT_ORDER", exceptionDetails, "/climbs?sortOrder=");
+        }
+
+        return filteredAndSortedClimbs;
+    }
+
+    private List<Climb> sortClimbs(Specification<Climb> filterSpec, String sortBy, String sortOrder){
+
+        List<Climb> sortedClimbs;
+
+        try {
+            Sort sort = Sort.by(Sort.Direction.fromString(sortOrder), sortBy);
+            sortedClimbs = climbRepo.findAll(filterSpec, sort);
+        }
+        // Catch the PropertyReferenceException when the sortBy field is not present in Climb
+        // Throw custom sorting exception
+        catch (PropertyReferenceException e) {
+            Map<String, String> exceptionDetails = new HashMap<>();
+            exceptionDetails.put(e.getPropertyName(), "You cannot sort by '" + sortBy + "' because that field does not exist on the Climb entity.");
+            throw new SortQueryException("FIELD_NOT_FOUND", exceptionDetails, "/climbs?sortBy=");
+        }
+        // Catch the IllegalArgumentException when the sortOrder ENUM is not present in Sort
+        // Throw custom sorting exception
+        catch (IllegalArgumentException e) {
+            Map<String, String> exceptionDetails = new HashMap<>();
+            exceptionDetails.put(sortOrder, "sortOrder must be either 'ASC' or 'DESC'.");
+            throw new SortQueryException("INVALID_SORT_ORDER", exceptionDetails, "/climbs?sortOrder=");
+        }
+
+        return sortedClimbs;
+    }
+
+
+    /**
+     *
+     * This method is used to dynamically build up an SQL query for retrieving climbs.
+     * It utilizes the JPA Specifications which allow us to easily create unique SQL query specifications that can be executed using the JpaRepository for a given resource
+     *
+     * @param username -> Required for retrieving only climbs that belong to the signed in user.
+     * @param grade -> Filter by grade (ie. retrieve only climbs for the 5.10a grade)
+     * @param style -> Filter by style (ie. retrieve only climbs with a style of "Sport")
+     * @param pitchesExpression -> Filter by number of pitches (ie. retrieve only climbs with 3 or more pitches)
+     * @param danger -> Filter by danger (ie. retrieve only climbs with a danger of "PG-13")
+     * @param stateAbbreviation -> Filter by stateAbbreviation (ie. retrieve only climbs in "CO")
+     * @param areaName -> Filter by areaName (ie. retrieve only climbs in the Shelf Road climbing area)
+     * @param cragName -> Filter by cragName (ie. retrieve only climbs in the Cactus Cliff crag)
+     * @param isTicked -> Filter by isTicked (ie. retrieve only climbs that have been ticked or not ticked)
+     * @param starsExpression -> Filter by number of stars (ie. retrieve only climbs with 3 or more stars)
+     * @return The final specification for how to filter the list of climbs. Filters are chained together to allow filtering by more than one field at a single time.
+     */
+    private Specification<Climb> buildFilter(String username, String grade, String boulderGrade, String style, String pitchesExpression,
+                                             String danger, String stateAbbreviation, String areaName,
+                                             String cragName, Boolean isTicked, String starsExpression){
+
+
+        Specification<Climb> filterSpec = Specification.where(null);
+
+        if (username != null){
+            filterSpec = filterSpec.and(ClimbSpecification.byUserUsername(username));
+        }
+
+        if(grade != null){
+            filterSpec = filterSpec.and(ClimbSpecification.gradeLike(grade));
+        }
+
+        if(boulderGrade != null){
+            filterSpec = filterSpec.and(ClimbSpecification.boulderGradeLike(boulderGrade));
+        }
+
+        if(style != null){
+            filterSpec = filterSpec.and(ClimbSpecification.styleLike(style));
+        }
+
+        if(pitchesExpression != null){
+            filterSpec = filterSpec.and(ClimbSpecification.pitches(pitchesExpression));
+        }
+
+        if(danger != null){
+            filterSpec = filterSpec.and(ClimbSpecification.dangerLike(danger));
+        }
+
+        if(stateAbbreviation != null){
+            filterSpec = filterSpec.and(ClimbSpecification.stateAbbreviationLike(stateAbbreviation));
+        }
+
+        if(areaName != null){
+            filterSpec = filterSpec.and(ClimbSpecification.areaNameLike(areaName));
+        }
+
+        if(cragName != null){
+            filterSpec = filterSpec.and(ClimbSpecification.cragNameLike(cragName));
+        }
+
+        if(isTicked != null){
+            filterSpec = filterSpec.and(ClimbSpecification.tickedIs(isTicked));
+        }
+
+        if(starsExpression != null){
+            filterSpec = filterSpec.and(ClimbSpecification.starsEqual(starsExpression));
+        }
+
+        return filterSpec;
+
     }
 
 }
