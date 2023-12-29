@@ -1,5 +1,4 @@
-# krd-lets-climb-rest
-Welcome to krd-lets-climb-rest!
+# Welcome to krd-lets-climb-rest!
 
 View the detailed API Docs here: http://localhost:8080/swagger-ui/index.html
 
