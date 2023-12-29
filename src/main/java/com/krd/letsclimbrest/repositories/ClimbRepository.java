@@ -1,17 +1,16 @@
 package com.krd.letsclimbrest.repositories;
 
 import com.krd.letsclimbrest.entities.Climb;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ClimbRepository extends JpaRepository<Climb, Integer> {
+public interface ClimbRepository extends JpaRepository<Climb, Integer>, JpaSpecificationExecutor<Climb> {
 
     List<Climb> findByUserUsername(String username);
-    List<Climb> findByUserUsername(String username, Sort sort);
 
     Climb findClimbByIdAndUserUsername(Integer id, String username);
 
