@@ -17,7 +17,7 @@ pipeline{
             steps {
                 script {
                     // Read properties from sdp.yaml
-                    props = readProperties file: 'sdp.yaml'
+                    props = readYaml(file: 'sdp.yaml')
 
                     // Access versionNumber property
                     def versionNumber = props.versionNumber
