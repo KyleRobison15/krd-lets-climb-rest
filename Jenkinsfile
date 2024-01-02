@@ -28,10 +28,6 @@ pipeline{
 
     agent any
 
-    tools {
-        jdk "JDK 1.17"
-    }
-
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
         disableConcurrentBuilds()
