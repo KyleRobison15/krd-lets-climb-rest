@@ -28,6 +28,10 @@ pipeline{
 
     agent any
 
+    tools {
+        gradle '8.5'
+    }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
         disableConcurrentBuilds()
