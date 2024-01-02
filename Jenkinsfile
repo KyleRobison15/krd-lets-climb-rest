@@ -42,7 +42,8 @@ pipeline{
         stage('Initialize Pipeline') {
             steps {
                 script {
-                echo "Hello!"
+                    props = get_sdp_props(propertiesFileName)
+                    set_git_revision(props)
                 }
             }
         }
