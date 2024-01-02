@@ -11,7 +11,7 @@ def should_deploy_to_dev(props) {
 }
 
 def get_sdp_props(propertiesFileName) {
-    props = gradle.initProperties(propertiesFileName)
+    props = readFile file: "sdp.yaml"
     println("Updated properties are " + props)
     return props
 }
