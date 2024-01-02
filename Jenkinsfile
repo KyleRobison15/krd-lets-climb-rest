@@ -1,4 +1,3 @@
-#!/bin/groovy
 String imageTag
 String propertiesFileName = "sdp.yaml"
 def props
@@ -13,13 +12,6 @@ def should_deploy_to_dev(props) {
 
 def get_sdp_props(propertiesFileName) {
     props = gradle.initProperties(propertiesFileName)
-    if ("${props.sdpEnvironment}" == "null") {
-        // If value in sdp.yaml file is undefined, then use param
-        println("Setting sdpEnvironment to Jenkins parameter: ${params.sdpEnvironment}")
-        props.sdpEnvironment = "$params.sdpEnvironment"
-    } else {
-        println("Using sdpEnvironment from sdp.yaml file: ${props.sdpEnvironment}")
-    }
     println("Updated properties are " + props)
     return props
 }
