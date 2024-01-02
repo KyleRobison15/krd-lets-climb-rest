@@ -37,7 +37,7 @@ pipeline{
 
     // Specify we should use the installation of Gradle we have in our Jenkins tools named 'Gradle-8.5'
     tools {
-        jdk 'JDK 1.17'
+        gradle 'Gradle-8.5'
     }
 
     options {
