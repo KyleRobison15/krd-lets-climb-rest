@@ -2,17 +2,17 @@ String imageTag
 def props
 def buildWkspace
 
+def get_sdp_props() {
+    props = readFile file: 'sdp.yaml'
+    println("Updated properties are " + props)
+    return props
+}
+
 def should_deploy_to_dev(props) {
     props.triggerDeploymentBranch = props.triggerDeploymentBranch.replaceAll(/"/, '')
     def shouldDeployToDev = "${env.BRANCH_NAME}" == "master" || "${env.BRANCH_NAME}" == "${props.triggerDeploymentBranch}"
     println("Will we deploy to dev? " + shouldDeployToDev)
     return shouldDeployToDev
-}
-
-def get_sdp_props() {
-    props = readFile file: 'sdp.yaml'
-    println("Updated properties are " + props)
-    return props
 }
 
 def set_git_revision(props) {
@@ -39,15 +39,10 @@ pipeline{
     }
 
     stages {
-        stage('Initialize Pipeline') {
+        stage('Checkout') {
             steps {
                 script {
-                    properties([])
-
-                    props = get_sdp_props()
-                    set_git_revision(props)
-                    imageTag = image.adjustImageTagForBranch(props.versionNumber)
-                    shouldDeployToDev = should_deploy_to_dev(props)
+                    checkout scm
                 }
             }
         }
