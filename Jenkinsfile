@@ -5,6 +5,11 @@ pipeline{
 
     agent any
 
+    // Specify we should use the installation of Gradle we have in our Jenkins tools named 'Gradle-8.5'
+    tools {
+        gradle 'Gradle-8.5'
+    }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
         disableConcurrentBuilds()
@@ -17,6 +22,8 @@ pipeline{
             steps {
                 script {
                     echo "Hello!"
+                    props = readFile file: 'sdp.yaml'
+                    echo props.versionNumber
                 }
             }
         }
