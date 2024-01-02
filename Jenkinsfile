@@ -29,7 +29,7 @@ pipeline{
     agent any
 
     tools {
-        jdk "jdk 1.17"
+        jdk "JDK 1.17"
     }
 
     options {
