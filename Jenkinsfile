@@ -1,18 +1,19 @@
 String imageTag
+String propertiesFileName = "sdp.yaml"
 def props
 def buildWkspace
-
-def get_sdp_props() {
-    props = readFile file: 'sdp.yaml'
-    println("Updated properties are " + props)
-    return props
-}
 
 def should_deploy_to_dev(props) {
     props.triggerDeploymentBranch = props.triggerDeploymentBranch.replaceAll(/"/, '')
     def shouldDeployToDev = "${env.BRANCH_NAME}" == "master" || "${env.BRANCH_NAME}" == "${props.triggerDeploymentBranch}"
     println("Will we deploy to dev? " + shouldDeployToDev)
     return shouldDeployToDev
+}
+
+def get_sdp_props(propertiesFileName) {
+    props = gradle.initProperties(propertiesFileName)
+    println("Updated properties are " + props)
+    return props
 }
 
 def set_git_revision(props) {
@@ -26,9 +27,8 @@ pipeline{
 
     agent any
 
-    // Specify we should use the installation of Gradle we have in our Jenkins tools named 'Gradle-8.5'
     tools {
-        gradle 'Gradle-8.5'
+        jdk 'JDK 1.17'
     }
 
     options {
@@ -39,10 +39,10 @@ pipeline{
     }
 
     stages {
-        stage('Checkout') {
+        stage('Initialize Pipeline') {
             steps {
                 script {
-                    checkout scm
+                echo "Hello!"
                 }
             }
         }
