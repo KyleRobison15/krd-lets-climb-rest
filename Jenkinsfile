@@ -1,5 +1,4 @@
 String imageTag
-String propertiesFileName = "sdp.yaml"
 def props
 def buildWkspace
 
@@ -10,8 +9,8 @@ def should_deploy_to_dev(props) {
     return shouldDeployToDev
 }
 
-def get_sdp_props(propertiesFileName) {
-    props = gradle.initProperties(propertiesFileName)
+def get_sdp_props() {
+    props = readFile file: 'sdp.yaml'
     println("Updated properties are " + props)
     return props
 }
