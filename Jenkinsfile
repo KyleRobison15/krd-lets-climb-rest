@@ -44,7 +44,7 @@ pipeline{
                 script {
                     properties([])
 
-                    props = get_sdp_props(propertiesFileName)
+                    props = get_sdp_props()
                     set_git_revision(props)
                     imageTag = image.adjustImageTagForBranch(props.versionNumber)
                     shouldDeployToDev = should_deploy_to_dev(props)
