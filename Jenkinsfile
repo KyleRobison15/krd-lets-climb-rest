@@ -12,7 +12,8 @@ def should_deploy_to_dev(props) {
 
 def get_sdp_props(propertiesFileName) {
     props = readFile file: "sdp.yaml"
-    println("Updated properties are " + props)
+    println("Updated properties are:")
+    println(props)
     return props
 }
 
