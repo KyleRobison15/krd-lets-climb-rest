@@ -1,4 +1,3 @@
-#!/bin/groovy
 String imageTag
 String propertiesFileName = "sdp.yaml"
 def props
