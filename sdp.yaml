@@ -1,0 +1,13 @@
+versionNumber: "1.0.0-SNAPSHOT"
+imageName: "krd-lets-climb-rest"
+triggerDeploymentBranch: ""
+
+pipelineOwnerEmail: "kylerobison15@gmail.com"
+onFailureEmail: "kylerobison15@gmail.com"
+
+git_repo_name: "krd-lets-climb-rest"
+git_repo_url: "https://github.com/KyleRobison15/krd-lets-climb-rest"
+
+dockerfileLocation: "./Dockerfile"
+
+k8sClusterName: ""
