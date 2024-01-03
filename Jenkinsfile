@@ -14,6 +14,13 @@ def set_git_revision(props) {
     println("git_revision: " + "${props.git_revision}")
 }
 
+def should_deploy_app(props) {
+    props.triggerDeploymentBranch = props.triggerDeploymentBranch.replaceAll(/"/, '')
+    def shouldDeployApp= "${env.BRANCH_NAME}" == "main" || "${env.BRANCH_NAME}" == "${props.triggerDeploymentBranch}"
+    println("Will we deploy? " + shouldDeployApp)
+    return shouldDeployApp
+}
+
 pipeline{
 
     agent any
@@ -40,6 +47,7 @@ pipeline{
 
                    props = get_sdp_props()
                    set_git_revision(props)
+                   shouldDeployApp = should_deploy_app(props)
 
                 }
             }
