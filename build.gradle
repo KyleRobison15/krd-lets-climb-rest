@@ -6,7 +6,7 @@ plugins {
 	id 'com.gorylenko.gradle-git-properties' version '2.4.1'
 }
 
-group = 'com.krd'
+group = 'com'
 version = 'VERSION_NUMBER'
 
 java {
