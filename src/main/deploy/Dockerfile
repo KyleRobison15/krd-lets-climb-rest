@@ -5,6 +5,8 @@ LABEL com.krd.sdp.image.tag=IMAGE_TAG \
       com.krd.sdp.image.commit=IMAGE_LATEST_COMMIT \
       com.krd.sdp.image.artifactVersion=krd-lets-climb-rest-VERSION_NUMBER.jar
 
+VOLUME /tmp
+
 # Documentation explaining this container will eventually listen on port 8080.
 # Later, when we run this app inside a docker container, we know we should map a port from the host, to port 8080 on the container
 EXPOSE 8080
