@@ -27,7 +27,7 @@ pipeline{
             steps {
                 script {
 
-                   checkout scmGit(branches: [[name: '*/${env.BRANCH_NAME}']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/KyleRobison15/krd-lets-climb-rest']])
+                   checkout scmGit(branches: [[name: "*/${env.BRANCH_NAME}"]], extensions: [], userRemoteConfigs: [[url: 'https://github.com/KyleRobison15/krd-lets-climb-rest']])
 
                    props = get_sdp_props()
                 }
