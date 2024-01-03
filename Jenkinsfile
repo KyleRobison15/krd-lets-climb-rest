@@ -28,9 +28,9 @@ def modifyDockerFile(String imageTag, String versionNumber) {
     def dockerfileLocation
 
     if(fileExists('src/main/deploy/Dockerfile')){
-        dockerfileLocation = 'src/main/deploy/Dockerfile'
+        dockerfileLocation = "src/main/deploy/Dockerfile"
     } else {
-        dockerfileLocation = 'Dockerfile'
+        dockerfileLocation = "Dockerfile"
     }
 
     echo """
@@ -45,7 +45,7 @@ def modifyDockerFile(String imageTag, String versionNumber) {
     echo sh(returnStdout: true, script: "cat ./${dockerfileLocation}" )
 
     echo "modifying dockerfile"
-//     sh(returnStdout: true, script: """sed -i 's/IMAGE_TAG/"${imageTag}"/g' ${dockerfileLocation}""")
+    sh(returnStdout: true, script: """sed -i 's/IMAGE_TAG/"${imageTag}"/g' ${dockerfileLocation}""")
     sh(returnStdout: true, script: """sed -i 's/IMAGE_CREATED_DT/"${imageCreatedDt}"/g' ${dockerfileLocation}""")
     sh(returnStdout: true, script: """sed -i 's/IMAGE_LATEST_COMMIT/"${gitHash}"/g' ${dockerfileLocation}""")
     sh(returnStdout: true, script: """sed -i 's/VERSION_NUMBER/"${versionNumber}"/g' ${dockerfileLocation}""")
