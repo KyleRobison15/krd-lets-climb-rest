@@ -2,7 +2,6 @@ def props
 
 def get_sdp_props() {
     props = readFile file: "sdp.yaml"
-    props.git_revision = "${env.BRANCH_NAME}"
     println("Updated properties are:")
     println(props)
     return props
@@ -33,6 +32,7 @@ pipeline{
                    checkout scmGit(branches: [[name: '*/' + "${branchName}"]], extensions: [], userRemoteConfigs: [[url: 'https://github.com/KyleRobison15/krd-lets-climb-rest']])
 
                    props = get_sdp_props()
+                   props.git_revision = "${env.BRANCH_NAME}"
                 }
             }
         }
