@@ -24,10 +24,8 @@ def should_deploy_app(props) {
 // Updates dockerfile with variable information
 def modifyDockerFile(String imageTag, String versionNumber, String dockerfileLocation) {
     def gitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-    def imageCreatedDt = new Date().format('yyyyMMdd-HH:mm:ss')
 
     echo """ Image Tag: ${imageTag}
-    Image Created Date ${imageCreatedDt}
     Git Hash: ${gitHash}
     Version Number: ${versionNumber}"""
 
