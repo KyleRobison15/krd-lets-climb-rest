@@ -11,6 +11,10 @@ pipeline{
 
     agent any
 
+    environment{
+        DEFAULT_BRANCH = 'main'
+    }
+
     tools {
         gradle 'Gradle-8.5'
     }
@@ -23,10 +27,14 @@ pipeline{
     }
 
     stages {
-        stage('Checkout') {
+        stage('Initialize Pipeline') {
             steps {
                 script {
-                   checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/KyleRobison15/krd-lets-climb-rest']])
+
+                   def branchName = env.BRANCH_NAME ?: DEFAULT_BRANCH
+
+                   checkout scmGit(branches: [[name: '*/${branchName}']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/KyleRobison15/krd-lets-climb-rest']])
+
                    props = get_sdp_props()
                 }
             }
