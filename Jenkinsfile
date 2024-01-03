@@ -2,6 +2,7 @@ def props
 
 def get_sdp_props() {
     props = readFile file: "sdp.yaml"
+    props.git_revision = "${env.BRANCH_NAME}"
     println("Updated properties are:")
     println(props)
     return props
