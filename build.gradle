@@ -6,7 +6,7 @@ plugins {
 	id 'com.gorylenko.gradle-git-properties' version '2.4.1'
 }
 
-group = 'com'
+group = 'com.krd'
 version = 'VERSION_NUMBER'
 
 java {
@@ -47,11 +47,10 @@ tasks.named('test') {
 }
 
 task copyDockerfile(type: Copy){
-	from '.'
+	from 'src/main/docker'
 	into 'build/docker'
 }
 
-task copyDeployFiles(type: Copy){
-	from 'src/main/deploy'
-	into 'build/deploy'
+compileJava {
+	dependsOn copyDockerfile
 }
