@@ -122,9 +122,6 @@ pipeline{
             when {
                 expression { shouldDeployApp };
             }
-            agent {
-                label 'docker'
-            }
             steps {
                 script {
                     echo props.dockerRegistry
