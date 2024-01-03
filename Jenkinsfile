@@ -93,7 +93,7 @@ pipeline{
                 script {
 
                     sh "./gradlew clean build"
-                    archiveArtifacts "build/libs/*.jar,${dockerfileLocation},build/deploy/*.yaml"
+                    archiveArtifacts "build/libs/*.jar,${props.dockerfileLocation},build/deploy/*.yaml"
 
                 }
             }
