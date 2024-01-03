@@ -1,26 +1,9 @@
-# This is a multi-stage dockerfile. That means there will be two separate images created from a single dockerfile.
-
-# Image 1: The build image
-# Specify the base image for the build stage.
-# Here we use the gradle:8.5.0-jdk17-alpine image, which includes both Gradle and JDK 17, and name this stage as "build."
-#FROM gradle:8.5.0-jdk17-alpine AS build
-
-# Copy the Java source code from the host machine into the docker image in a newly created directory: /home/gradle/src
-#COPY --chown=gradle:gradle . /home/gradle/src
-
-# Set the working directory in the image to the one we just created that contains the source code
-#WORKDIR /home/gradle/src
-
-# Build the Java app, specifically without using the background daemon for the build
-# The result of this operation will be a .jar file that contains our executable application
-#RUN gradle build --no-daemon
-
-# Image 2: The runtime image
-# This base image is optimize for runtime only, and doesn't include any build tools (since we already did that in the previous stage)
-# This allows us to keep the final image much smaller
 FROM eclipse-temurin:17-jre-alpine
 
-ENV artifactVersion=krd-lets-climb-rest-VERSION_NUMBER.jar
+LABEL com.krd.sdp.image.tag=IMAGE_TAG \
+      com.krd.sdp.image.tag=IMAGE_CREATED_DT \
+      com.krd.sdp.image.tag=IMAGE_LATEST_COMMIT \
+      com.krd.sdp.image.artifactVersion=krd-lets-climb-rest-VERSION_NUMBER.jar \
 
 VOLUME /tmp
 
