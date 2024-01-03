@@ -1,27 +1,10 @@
-String imageTag
-String propertiesFileName = "sdp.yaml"
 def props
-def buildWkspace
 
-def should_deploy_to_dev(props) {
-    props.triggerDeploymentBranch = props.triggerDeploymentBranch.replaceAll(/"/, '')
-    def shouldDeployToDev = "${env.BRANCH_NAME}" == "master" || "${env.BRANCH_NAME}" == "${props.triggerDeploymentBranch}"
-    println("Will we deploy to dev? " + shouldDeployToDev)
-    return shouldDeployToDev
-}
-
-def get_sdp_props(propertiesFileName) {
+def get_sdp_props() {
     props = readFile file: "sdp.yaml"
     println("Updated properties are:")
     println(props)
     return props
-}
-
-def set_git_revision(props) {
-    if ("${props.git_revision}" == "") {
-        props.git_revision = "${env.BRANCH_NAME}"
-    }
-    println("git_revision: " + "${props.git_revision}")
 }
 
 pipeline{
@@ -29,7 +12,7 @@ pipeline{
     agent any
 
     tools {
-        jdk 'JDK 1.17'
+        gradle 'Gradle-8.5'
     }
 
     options {
@@ -40,12 +23,11 @@ pipeline{
     }
 
     stages {
-        stage('Initialize Pipeline') {
+        stage('Checkout') {
             steps {
                 script {
-                    props = get_sdp_props(propertiesFileName)
-                    set_git_revision(props)
-                    imageTag = image.adjustImageTagForBranch(props.versionNumber)
+                   checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/KyleRobison15/krd-lets-climb-rest']])
+                   props = get_sdp_props()
                 }
             }
         }
