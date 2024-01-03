@@ -121,7 +121,7 @@ pipeline{
                     echo "Image Tag: ${imageTag}"
                     echo "Full Image: ${imageName}:${imageTag}"
 
-                    sh "docker build -f ${dockerfileLocation} -t ${imageName}:${imageTag} ."
+                    sh "docker build -f ${props.dockerfileLocation} -t ${imageName}:${imageTag} ."
                 }
             }
         }
