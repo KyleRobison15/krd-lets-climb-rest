@@ -45,6 +45,17 @@ def modifyDockerFile(String imageTag, String versionNumber, String dockerfileLoc
     echo sh(returnStdout: true, script: "cat ./${dockerfileLocation}")
 }
 
+//Updates gradle file with variable information
+def modifyGradleFile(String versionNumber) {
+    echo "Version Number: ${versionNumber}"
+
+    def buildFile = 'build.gradle'
+
+    echo "modifying ${buildFile}"
+    sh(returnStdout: true, script: """sed -i '' 's/VERSION_NUMBER/${versionNumber}/g' "${buildFile}" """)
+
+}
+
 pipeline{
 
     agent any
@@ -76,11 +87,11 @@ pipeline{
                    props = get_sdp_props()
                    set_git_revision(props)
 
-                   def versionNumber = props.versionNumber
-                   imageTag = "${versionNumber}-${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
+                   imageTag = "${props.versionNumber}-${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
                    echo "Image Tag: ${imageTag}"
 
                    modifyDockerFile(imageTag, props.versionNumber, props.dockerfileLocation)
+                   modifyGradleFile(props.versionNumber)
 
                    shouldDeployApp = should_deploy_app(props)
 
