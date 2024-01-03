@@ -27,7 +27,7 @@ def modifyDockerFile(String imageTag, String versionNumber, String dockerfileLoc
     def imageCreatedDt = new Date().format('yyyyMMdd-HH:mm:ss')
 
     echo """ Image Tag: ${imageTag}
-    Image Created Date ${imageCreatedDt}
+    Image Created Date: ${imageCreatedDt}
     Git Hash: ${gitHash}
     Version Number: ${versionNumber}"""
 
