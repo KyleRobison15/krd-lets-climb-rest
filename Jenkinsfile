@@ -11,10 +11,6 @@ pipeline{
 
     agent any
 
-    environment{
-        DEFAULT_BRANCH = 'main'
-    }
-
     tools {
         gradle 'Gradle-8.5'
     }
