@@ -83,6 +83,19 @@ pipeline{
                 }
             }
         }
+
+        stage('Build Project') {
+            steps {
+                script {
+
+                    def gradleTool = tool 'Gradle-8.5'
+                    gradleTool.run rootDir: ".", buildFile: 'build.gradle', switches: '-g .gradle --no-daemon', tasks: 'clean build'
+                    archiveArtifacts "build/libs/*.jar,${dockerfileLocation},build/deploy/*.yaml"
+
+                }
+            }
+        }
+
     }
 
 }
