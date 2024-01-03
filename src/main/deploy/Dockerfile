@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-alpine
+FROM openjdk:17-jdk-slim
 
 LABEL com.krd.sdp.image.tag=IMAGE_TAG \
       com.krd.sdp.image.createddt=IMAGE_CREATED_DT \
