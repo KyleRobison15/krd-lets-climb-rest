@@ -47,6 +47,14 @@ pipeline{
 
                    props = get_sdp_props()
                    set_git_revision(props)
+
+                   def versionNumber = props.versionNumber
+                   imageTag = "${versionNumber}-${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
+                   echo "Image Tag: ${imageTag}"
+
+//                    gradle.modifyDockerFile(imageTag, props.versionNumber, props.dockerfileLocation)
+//                    gradle.modifyGradleFile(props.versionNumber)
+
                    shouldDeployApp = should_deploy_app(props)
 
                 }
