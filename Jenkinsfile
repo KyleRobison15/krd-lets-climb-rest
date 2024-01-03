@@ -27,7 +27,7 @@ def modifyDockerFile(String imageTag, String versionNumber, String dockerfileLoc
     def imageCreatedDt = new Date().format('yyyyMMdd-HH:mm:ss')
 
     echo """ Image Tag: ${imageTag}
-    Image Created Date: ${imageCreatedDt}
+    Image Created Date ${imageCreatedDt}
     Git Hash: ${gitHash}
     Version Number: ${versionNumber}"""
 
@@ -36,7 +36,6 @@ def modifyDockerFile(String imageTag, String versionNumber, String dockerfileLoc
 
     echo "modifying dockerfile"
     sh(returnStdout: true, script: """sed -i 's/IMAGE_TAG/"${imageTag}"/g' ${dockerfileLocation}""")
-    sh(returnStdout: true, script: """sed -i 's/IMAGE_CREATED_DT/"${imageCreatedDt}"/g' ${dockerfileLocation}""")
     sh(returnStdout: true, script: """sed -i 's/IMAGE_LATEST_COMMIT/"${gitHash}"/g' ${dockerfileLocation}""")
     sh(returnStdout: true, script: """sed -i 's/VERSION_NUMBER/${versionNumber}/g' ${dockerfileLocation}""")
 
