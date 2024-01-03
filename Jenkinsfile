@@ -33,7 +33,7 @@ pipeline{
 
                    def branchName = env.BRANCH_NAME ?: DEFAULT_BRANCH
 
-                   checkout scmGit(branches: [[name: '*/${branchName}']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/KyleRobison15/krd-lets-climb-rest']])
+                   checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/KyleRobison15/krd-lets-climb-rest']])
 
                    props = get_sdp_props()
                 }
