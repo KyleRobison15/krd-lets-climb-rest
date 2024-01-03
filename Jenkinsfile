@@ -24,8 +24,10 @@ def should_deploy_app(props) {
 // Updates dockerfile with variable information
 def modifyDockerFile(String imageTag, String versionNumber, String dockerfileLocation) {
     def gitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+    def imageCreatedDt = new Date().format('yyyyMMdd-HH:mm:ss')
 
     echo """ Image Tag: ${imageTag}
+    Image Created Date ${imageCreatedDt}
     Git Hash: ${gitHash}
     Version Number: ${versionNumber}"""
 
@@ -33,9 +35,10 @@ def modifyDockerFile(String imageTag, String versionNumber, String dockerfileLoc
     echo sh(returnStdout: true, script: "cat ./${dockerfileLocation}" )
 
     echo "modifying dockerfile"
-    sh(returnStdout: true, script: """sed -i 's/IMAGE_TAG/"${imageTag}"/g' ${dockerfileLocation}""")
-    sh(returnStdout: true, script: """sed -i 's/IMAGE_LATEST_COMMIT/"${gitHash}"/g' ${dockerfileLocation}""")
-    sh(returnStdout: true, script: """sed -i 's/VERSION_NUMBER/${versionNumber}/g' ${dockerfileLocation}""")
+    sh(returnStdout: true, script: """sed -i 's#IMAGE_TAG#"${imageTag}"#g' ${dockerfileLocation}""")
+    sh(returnStdout: true, script: """sed -i 's#IMAGE_CREATED_DT#"${imageCreatedDt}"#g' ${dockerfileLocation}""")
+    sh(returnStdout: true, script: """sed -i 's#IMAGE_LATEST_COMMIT#"${gitHash}"#g' ${dockerfileLocation}""")
+    sh(returnStdout: true, script: """sed -i 's#VERSION_NUMBER#${versionNumber}#g' ${dockerfileLocation}""")
 
     echo "dockerfile file after modification"
     echo sh(returnStdout: true, script: "cat ./${dockerfileLocation}")

@@ -1,6 +1,7 @@
 FROM eclipse-temurin:17-jre-alpine
 
 LABEL com.krd.sdp.image.tag=IMAGE_TAG \
+      com.krd.sdp.image.createddt=IMAGE_CREATED_DT \
       com.krd.sdp.image.commit=IMAGE_LATEST_COMMIT \
       com.krd.sdp.image.artifactVersion=krd-lets-climb-rest-VERSION_NUMBER.jar \
 
