@@ -9,5 +9,7 @@ git_repo_name: "krd-lets-climb-rest"
 git_repo_url: "https://github.com/KyleRobison15/krd-lets-climb-rest"
 
 dockerfileLocation: "src/main/deploy/Dockerfile"
+dockerHubNamespace: "kylerobison"
+dockerHubRepo: "krd-lets-climb-rest"
 
 k8sClusterName: ""
