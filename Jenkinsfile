@@ -117,7 +117,11 @@ pipeline{
             steps {
                 script {
                     String imageName = "${props.dockerHubNamespace}/" + "${props.dockerHubRepo}"
-                    echo imageName
+                    echo "Image Name: ${imageName}"
+                    echo "Image Tag: ${imageTag}"
+                    echo "Full Image: ${imageName}:${imageTag}"
+
+                    sh "docker build -f ${dockerfileLocation} -t ${imageName}:${imageTag} ."
                 }
             }
         }
