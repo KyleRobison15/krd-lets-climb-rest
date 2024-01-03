@@ -92,7 +92,7 @@ pipeline{
             steps {
                 script {
 
-                    sh "/.gradlew clean build"
+                    sh "./gradlew clean build"
                     archiveArtifacts "build/libs/*.jar,${dockerfileLocation},build/deploy/*.yaml"
 
                 }
