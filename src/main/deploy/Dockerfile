@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-alpine
 
 LABEL com.krd.sdp.image.tag=IMAGE_TAG \
       com.krd.sdp.image.createddt=IMAGE_CREATED_DT \
