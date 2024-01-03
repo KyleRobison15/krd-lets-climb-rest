@@ -110,7 +110,7 @@ pipeline{
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build and Push Docker Image') {
             when {
                 expression { shouldDeployApp };
             }
@@ -122,6 +122,18 @@ pipeline{
                     echo "Full Image: ${imageName}:${imageTag}"
 
                     sh "docker build -f ${props.dockerfileLocation} -t ${imageName}:${imageTag} ."
+
+                    withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerHubPwd')]) {
+
+                      // Login to DockerHub
+                      sh 'docker login -u kylerobison -p ${dockerHubPwd}'
+
+                      // Push to DockerHub
+                      sh "docker push ${imageName}:${imageTag}"
+
+                    }
+
+
                 }
             }
         }
