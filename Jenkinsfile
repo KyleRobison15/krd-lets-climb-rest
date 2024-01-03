@@ -1,4 +1,5 @@
 String imageTag
+String fullImageName
 def props
 
 def get_sdp_props() {
@@ -90,6 +91,9 @@ pipeline{
                    imageTag = "${props.versionNumber}-${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
                    echo "Image Tag: ${imageTag}"
 
+                   fullImageName = "${props.dockerHubNamespace}/${props.dockerHubRepo}:${imageTag}"
+                   echo "Full Image Name: ${fullImageName}"
+
                    modifyDockerFile(imageTag, props.versionNumber, props.dockerfileLocation)
                    modifyGradleFile(props.versionNumber)
 
@@ -110,34 +114,31 @@ pipeline{
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Build Docker Image') {
             when {
                 expression { shouldDeployApp };
             }
             steps {
                 script {
-                    String imageName = "${props.dockerHubNamespace}/" + "${props.dockerHubRepo}"
-                    echo "Image Name: ${imageName}"
-                    echo "Image Tag: ${imageTag}"
-                    echo "Full Image: ${imageName}:${imageTag}"
-
-                    sh "docker build -f ${props.dockerfileLocation} -t ${imageName}:${imageTag} ."
-
-                    withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerHubPwd')]) {
-
-                      // Login to DockerHub
-                      sh 'docker login -u kylerobison -p ${dockerHubPwd}'
-
-                      // Push to DockerHub
-                      sh "docker push ${imageName}:${imageTag}"
-
-                    }
-
-
+                    echo "Full Image Name: ${fullImageName}"
+                    sh "docker build -f ${props.dockerfileLocation} -t ${fullImageName} ."
                 }
             }
         }
 
+        stage('Push Docker Image') {
+            when {
+                expression { shouldDeployApp };
+            }
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerHubPwd')]) {
+                      sh 'docker login -u kylerobison -p ${dockerHubPwd}'
+                      sh "docker push ${fullImageName}"
+                    }
+                }
+            }
+        }
     }
 
 }
