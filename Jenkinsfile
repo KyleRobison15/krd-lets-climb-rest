@@ -49,6 +49,10 @@ pipeline{
 
     agent any
 
+    environment {
+        GRADLE_OPTS = "-Dorg.gradle.daemon=false"
+    }
+
     tools {
         gradle 'Gradle-8.5'
     }
@@ -88,8 +92,7 @@ pipeline{
             steps {
                 script {
 
-                    def gradleTool = tool 'Gradle-8.5'
-                    gradleTool.run rootDir: ".", buildFile: 'build.gradle', switches: '-g .gradle --no-daemon', tasks: 'clean build'
+                    sh "/.gradlew clean build"
                     archiveArtifacts "build/libs/*.jar,${dockerfileLocation},build/deploy/*.yaml"
 
                 }
