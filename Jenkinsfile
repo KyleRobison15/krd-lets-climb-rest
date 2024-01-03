@@ -15,13 +15,6 @@ def set_git_revision(props) {
     println("git_revision: " + "${props.git_revision}")
 }
 
-def set_docker_registry(props) {
-    if ("${props.dockerRegistry}" == "null") {
-        props.dockerRegistry = "${props.dockerHubNamespace}/" + "${props.dockerHubRepo}"
-    }
-    println("dockerRegistry: " + "${props.dockerRegistry}")
-}
-
 def should_deploy_app(props) {
     props.triggerDeploymentBranch = props.triggerDeploymentBranch.replaceAll(/"/, '')
     def shouldDeployApp= "${env.BRANCH_NAME}" == "main" || "${env.BRANCH_NAME}" == "${props.triggerDeploymentBranch}"
@@ -93,7 +86,6 @@ pipeline{
 
                    props = get_sdp_props()
                    set_git_revision(props)
-                   set_docker_registry(props)
 
                    imageTag = "${props.versionNumber}-${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
                    echo "Image Tag: ${imageTag}"
@@ -124,7 +116,8 @@ pipeline{
             }
             steps {
                 script {
-                    echo props.dockerRegistry
+                    String imageName = "${props.dockerHubNamespace}/" + "${props.dockerHubRepo}"
+                    echo imageName
                 }
             }
         }
