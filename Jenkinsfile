@@ -1,3 +1,4 @@
+String imageTag
 def props
 
 def get_sdp_props() {
