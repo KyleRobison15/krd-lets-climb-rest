@@ -7,7 +7,7 @@ onFailureEmail: "kylerobison15@gmail.com"
 
 git_repo_name: "krd-lets-climb-rest"
 git_repo_url: "https://github.com/KyleRobison15/krd-lets-climb-rest"
-git_revision: "null"
+git_revision: ""
 
 dockerfileLocation: "./Dockerfile"
 

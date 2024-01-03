@@ -18,7 +18,7 @@ def get_sdp_props(propertiesFileName) {
 }
 
 def set_git_revision(props) {
-    if ("${props.git_revision}" == "null") {
+    if ("${props.git_revision}" == "") {
         props.git_revision = "${env.BRANCH_NAME}"
     }
     println("git_revision: " + "${props.git_revision}")
