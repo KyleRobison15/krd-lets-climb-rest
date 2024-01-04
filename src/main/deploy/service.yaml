@@ -1,0 +1,12 @@
+apiVersion: v1 # Kuberentes API Version
+kind: Service # The Kubernetes resource Kind we are creating with this manifest file
+metadata:
+  name: krd-lets-climb-rest
+spec:
+  selector:
+    app: krd-lets-climb-rest
+  ports:
+    - protocol: "TCP"
+      port: 8080 # The port that the service is running on in the cluster
+      targetPort: 8080 # The port exposed by the service
+  type: NodePort # The type of the service
