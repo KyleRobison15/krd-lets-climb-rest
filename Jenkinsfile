@@ -139,6 +139,20 @@ pipeline{
                 }
             }
         }
+
+        stage('Deploy to K8s Cluster') {
+            when {
+                expression { shouldDeployApp };
+            }
+            steps {
+                script {
+                    kubernetesDeploy(configs: "${props.deploymentFilesLocation}/deployment.yaml",
+                                              "${props.deploymentFilesLocation}/service.yaml"
+                    )
+                }
+            }
+        }
+
     }
 
 }

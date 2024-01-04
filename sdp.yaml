@@ -12,4 +12,6 @@ dockerfileLocation: "src/main/docker/Dockerfile"
 dockerHubNamespace: "kylerobison"
 dockerHubRepo: "krd-lets-climb-rest"
 
+deployementFilesLocation: "src/main/deploy"
+
 k8sClusterName: ""
