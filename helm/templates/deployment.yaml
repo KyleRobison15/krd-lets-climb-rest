@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    {{- include "krd-lets-climb-rest.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.pod.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "krd-lets-climb-rest.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: {{ .Values.pod.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxUnavailable: {{ .Values.pod.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.pod.strategy.rollingUpdate.maxSurge }}
+  template:
+    metadata:
+    labels:
+      {{- include "krd-lets-climb-rest.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.pod.image.repository }}/{{ .Values.pod.image.name }}:{{ .Values.pod.image.tag }}"
+          ports:
+            - name: {{ .Values.pod.containers.portname }}
+              containerPort: {{ .Values.pod.containers.containerPort }}
+              protocol: {{ .Values.pod.containers.protocol }}
+      {{- with .Values.pod.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pod.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pod.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

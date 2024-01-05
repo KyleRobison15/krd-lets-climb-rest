@@ -16,23 +16,12 @@ Full Image Name
 {{/*
 Common labels
 */}}
-{{- define "adp-bulk-entry-rest.labels" -}}
-{{ include "adp-bulk-entry-rest.selectorLabels" . }}
-edwardjones.com/systemid: OPA
-edwardjones.com/app: {{ .Chart.Name }}
-edwardjones.com/component: {{ .Chart.Name }}
-edwardjones.com/support.language: java
+{{- define "krd-lets-climb-rest.labels" -}}
+{{ include "krd-lets-climb-rest.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 helm.sh/app-version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
-Ingress Annotations
-*/}}
-{{- define "adp-bulk-entry-rest.ingress.annotations" -}}
-nginx.ingress.kubernetes.io/ssl-redirect: "false"
 {{- end }}
 
 {{/*

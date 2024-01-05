@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: krd-lets-climb-rest
+  name: APP_NAME
 spec:
   selector:
     replicas: 2
     matchLabels:
-      app: krd-lets-climb-rest-app
+      app: APP_NAME
     revisionHistoryLimit: 2
     template:
       metadata:
         labels:
-          app: krd-lets-climb-rest-app
+          app: APP_NAME
       spec:
         containers:
-          - name: krd-lets-climb-rest
-            image: kylerobison/krd-lets-climb-rest:1.0.0-SNAPSHOT-3aab34f # Update to make dynamic later
+          - name: APP_NAME
+            image: FULL_IMAGE_NAME
             imagePullPolicy: IfNotPresent
             ports:
               - containerPort: 8080 # The port that the container is running on the cluster

@@ -57,6 +57,26 @@ def modifyGradleFile(String versionNumber) {
 
 }
 
+//Updates Kubernetes Objects with variable information
+def modifyKubernetesManifest(props, String fullImageName) {
+    echo "APP_NAME: ${props.imageName}"
+    echo "FULL_IMAGE_NAME: ${fullImageName}"
+
+    echo "Modifying ${props.deploymentManifestLocation}"
+    sh(returnStdout: true, script: """sed -i '' 's/APP_NAME/${imageName}/g' "${props.deploymentManifestLocation}" """)
+    sh(returnStdout: true, script: """sed -i '' 's/FULL_IMAGE_NAME/${fullImageName}/g' "${props.deploymentManifestLocation}" """)
+
+    echo "Modifying ${props.serviceManifestLocation}"
+    sh(returnStdout: true, script: """sed -i '' 's/APP_NAME/${imageName}/g' "${props.serviceManifestLocation}" """)
+
+    echo "Deployment Manifest after Modification: "
+    echo sh(returnStdout: true, script: "cat ./${props.deploymentManifestLocation}")
+
+    echo "Service Manifest after Modification: "
+    echo sh(returnStdout: true, script: "cat ./${props.serviceManifestLocation}")
+
+}
+
 pipeline{
 
     agent any
@@ -96,6 +116,7 @@ pipeline{
 
                    modifyDockerFile(imageTag, props.versionNumber, props.dockerfileLocation)
                    modifyGradleFile(props.versionNumber)
+                   modifyKubernetesManifest(props, fullImageName)
 
                    shouldDeployApp = should_deploy_app(props)
 
@@ -146,8 +167,8 @@ pipeline{
             }
             steps {
                 script {
-                    kubernetesDeploy(configs: "${props.deploymentFilesLocation}/deployment.yaml",
-                                              "${props.deploymentFilesLocation}/service.yaml"
+                    kubernetesDeploy(configs: "${props.deploymentManifestLocation}",
+                                              "${props.serviceManifestLocation}"
                     )
                 }
             }

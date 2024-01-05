@@ -1,0 +1,45 @@
+#This file contains the default values that will be used in each environment unless overridden by the other values files
+pod:
+
+  name: krd-lets-climb-rest
+  replicaCount: 2
+  revisionHistoryLimit: 2
+  podSecurityContext: {}
+  imagePullSecrets: []
+
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+
+  image:
+    repository: kylerobison
+    pullPolicy: IfNotPresent
+    name: krd-lets-climb-rest
+    tag:
+
+  containers:
+    portname: http
+    containerPort: 8080
+    protocol: TCP
+
+#  env:
+#    - name: JAVA_OPTS
+#      valueFrom:
+#        configMapKeyRef:
+#          name: adp-bulk-entry-rest-config-map
+#          key: java_opts_params
+
+  service:
+    port: 80
+    targetPort: 8080
+    type: NodePort
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+autoscaling:
+  enabled: false
+
+
