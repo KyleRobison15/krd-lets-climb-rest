@@ -167,9 +167,10 @@ pipeline{
             }
             steps {
                 script {
-                    kubernetesDeploy(configs: "${props.deploymentManifestLocation}",
-                                              "${props.serviceManifestLocation}"
-                    )
+                    withKubeConfig([credentialsId: 'kubeconfig']) {
+                        sh "kubectl apply -f ${props.deploymentManifestLocation}"
+                        sh "kubectl apply -f ${props.serviceManifestLocation}"
+                    }
                 }
             }
         }
