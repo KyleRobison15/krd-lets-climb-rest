@@ -7,7 +7,6 @@ spec:
     replicas: 2
     matchLabels:
       app: APP_NAME
-    revisionHistoryLimit: 2
     template:
       metadata:
         labels:
