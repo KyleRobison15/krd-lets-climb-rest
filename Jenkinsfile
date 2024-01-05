@@ -64,7 +64,7 @@ def modifyKubernetesManifest(props, String fullImageName) {
 
     echo "Modifying ${props.deploymentManifestLocation}"
     sh(returnStdout: true, script: """sed -i '' 's/APP_NAME/${props.imageName}/g' "${props.deploymentManifestLocation}" """)
-    sh(returnStdout: true, script: """sed -i '' 's/FULL_IMAGE_NAME/"${fullImageName}"/g' "${props.deploymentManifestLocation}" """)
+    sh(returnStdout: true, script: """sed -i '' 's#FULL_IMAGE_NAME#${fullImageName}#g' "${props.deploymentManifestLocation}" """)
 
     echo "Modifying ${props.serviceManifestLocation}"
     sh(returnStdout: true, script: """sed -i '' 's/APP_NAME/${props.imageName}/g' "${props.serviceManifestLocation}" """)
