@@ -4,17 +4,25 @@ metadata:
   name: APP_NAME
 spec:
   selector:
-    replicas: 2
     matchLabels:
       app: APP_NAME
-    template:
-      metadata:
-        labels:
-          app: APP_NAME
-      spec:
-        containers:
-          - name: APP_NAME
-            image: FULL_IMAGE_NAME
-            imagePullPolicy: IfNotPresent
-            ports:
-              - containerPort: 8080 # The port that the container is running on the cluster
+  replicas: 2
+  revisionHistoryLimit: 2
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 50%
+  template:
+    metadata:
+    labels:
+      app: APP_NAME
+    spec:
+      containers:
+        - name: APP_NAME
+          image: FULL_IMAGE_NAME
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+      nodeSelector: {}
+      affinity: {}
+      tolerations: []
