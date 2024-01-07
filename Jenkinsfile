@@ -167,7 +167,7 @@ pipeline{
             }
             steps {
                 script {
-                    withKubeConfig([credentialsId: 'kubeconfig']) {
+                    withKubeConfig([credentialsId: 'krd-general-kubeconfig']) {
                         sh "kubectl apply -f ${props.deploymentManifestLocation}"
                         sh "kubectl apply -f ${props.serviceManifestLocation}"
                     }

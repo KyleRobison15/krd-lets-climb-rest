@@ -1,0 +1,9 @@
+apiVersion : v1
+kind : ConfigMap
+metadata:
+  name : krd-lets-climb-rest-config-map
+  labels:
+    app: krd-lets-climb-rest
+data:
+  MYSQL_DB_HOST: krd-mysql
+  MYSQL_DB_SCHEMA: letsclimbdb

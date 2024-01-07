@@ -7,11 +7,6 @@ spec:
     matchLabels:
       app: APP_NAME
   replicas: 2
-  revisionHistoryLimit: 2
-  strategy:
-    rollingUpdate:
-      maxUnavailable: 50%
-      maxSurge: 50%
   template:
     metadata:
       labels:
@@ -22,7 +17,39 @@ spec:
           image: FULL_IMAGE_NAME
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - containerPort: 8085
+          env: # Set the environment variables we need for our pods
+            -
+            - name: MYSQL_DB_HOST # Get the name of the MySQL instance running in our cluster from the krd-lets-climb-rest-config-map
+              valueFrom:
+                configMapKeyRef:
+                  name: krd-lets-climb-rest-config-map
+                  key: MYSQL_DB_HOST
+
+            - name: MYSQL_DB_SCHEMA # Get the name of the MySQL Database we want to access from the krd-lets-climb-rest-config-map
+              valueFrom:
+                configMapKeyRef:
+                  name: krd-lets-climb-rest-config-map
+                  key: MYSQL_DB_SCHEMA
+
+            - name: MYSQL_LETS_CLIMB_DB_USERNAME # Get the username for the MySQL schema from the lets-climb-db-user secret, so we can log in as this user
+              valueFrom:
+                secretKeyRef:
+                  name: lets-climb-db-user
+                  key: username
+
+            - name: MYSQL_LETS_CLIMB_DB_PASSWORD # Get the password for the user we will log into the MySQL schema from the lets-climb-db-user secret
+              valueFrom:
+                secretKeyRef:
+                  name: lets-climb-db-user
+                  key: password
+
+            - name: LETS_CLIMB_JWT_KEY # Get the JWT Signing Key for our application's authentication from the lets-climb-jwt-key secret
+              valueFrom:
+                secretKeyRef:
+                  name: lets-climb-jwt-key
+                  key: jwtKey
+
       nodeSelector: {}
       affinity: {}
       tolerations: []
