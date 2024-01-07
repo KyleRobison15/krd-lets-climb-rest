@@ -9,7 +9,7 @@ VOLUME /tmp
 
 # Documentation explaining this container will eventually listen on port 8080.
 # Later, when we run this app inside a docker container, we know we should map a port from the host, to port 8080 on the container
-EXPOSE 8080
+EXPOSE 8085
 
 # Create a new group named "app" and a system user named "app" within that group.
 # This is often done to run applications within a Docker container with a specific user and group for security and isolation purposes.
