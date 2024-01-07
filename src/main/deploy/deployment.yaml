@@ -19,7 +19,6 @@ spec:
           ports:
             - containerPort: 8085
           env: # Set the environment variables we need for our pods
-            -
             - name: MYSQL_DB_HOST # Get the name of the MySQL instance running in our cluster from the krd-lets-climb-rest-config-map
               valueFrom:
                 configMapKeyRef:
