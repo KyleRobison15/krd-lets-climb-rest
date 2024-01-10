@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jre-jammy
 
 LABEL com.krd.sdp.image.tag=IMAGE_TAG \
       com.krd.sdp.image.createddt=IMAGE_CREATED_DT \
