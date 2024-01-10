@@ -142,7 +142,7 @@ pipeline{
             steps {
                 script {
                     echo "Full Image Name: ${fullImageName}"
-                    sh "docker build -f ${props.dockerfileLocation} -t ${fullImageName} ."
+                    sh "docker buildx build --platform=linux/amd64 -f ${props.dockerfileLocation} -t ${fullImageName} ."
                 }
             }
         }
