@@ -175,12 +175,8 @@ pipeline{
             }
         }
 
-        // This stage removes the SNAPSHOT image from Docker Hub
-        // Only non-snapshot versions are considered final images suitable for PROD.
-        stage('Remove SNAPSHOT Docker Image') {
-            when {
-                expression { shouldDeployApp && fullImageName.contains("SNAPSHOT") }
-            }
+        // Always delete the local docker image after deployment. This is to keep disk space free.
+        stage('Delete Local Docker Image') {
             steps {
                 script {
                     sh "docker image rm -f ${fullImageName}"
