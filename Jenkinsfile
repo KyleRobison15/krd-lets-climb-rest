@@ -183,7 +183,7 @@ pipeline{
             }
             steps {
                 script {
-                    sh 'docker image rm -f ${fullImageName}'
+                    sh "docker image rm -f ${fullImageName}"
                 }
             }
         }
