@@ -175,6 +175,22 @@ pipeline{
             }
         }
 
+        // This stage removes the SNAPSHOT image from Docker Hub
+        // Only non-snapshot versions are considered final images suitable for PROD.
+        stage('Remove SNAPSHOT Docker Image') {
+            when {
+                expression { shouldDeployApp && fullImageName.contains("SNAPSHOT") }
+            }
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerHubPwd')]) {
+                        sh "docker login -u kylerobison -p ${dockerHubPwd}"
+                        sh "docker rmi ${fullImageName}"
+                    }
+                }
+            }
+        }
+
     }
 
 }
