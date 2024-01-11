@@ -13,8 +13,8 @@ EXPOSE 8085
 
 # Create a new group named "app" and a system user named "app" within that group.
 # This is often done to run applications within a Docker container with a specific user and group for security and isolation purposes.
-RUN addgroup app
-RUN useradd -g app app
+RUN addgroup -S app && adduser -S -G app app
+
 USER app
 
 # This is the command that will be run immediately when the container starts
