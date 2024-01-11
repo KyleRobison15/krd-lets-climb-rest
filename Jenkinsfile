@@ -184,7 +184,7 @@ pipeline{
             steps {
                 script {
                     withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'dockerHubPwd')]) {
-                        sh "docker login -u kylerobison -p ${dockerHubPwd}"
+                        sh 'docker login -u kylerobison -p ${dockerHubPwd}'
                         sh "docker rmi ${fullImageName}"
                     }
                 }
