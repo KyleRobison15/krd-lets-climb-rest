@@ -30,7 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1")
 @Validated
-@Tag(name = "2. Climbs", description = "REST Endpoints for creating, reading, updating and deleting Climbs for an authenticated user.")
+@Tag(name = "3. Climbs", description = "REST Endpoints for creating, reading, updating and deleting Climbs for an authenticated user.")
 public class ClimbController {
 
     @Autowired

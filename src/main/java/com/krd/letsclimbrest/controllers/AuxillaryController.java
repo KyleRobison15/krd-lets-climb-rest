@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
-@Tag(name = "4. Auxillary", description = "REST Endpoints for reading static data from the style, grade, boulder-grade, and danger domain tables.")
+@Tag(name = "5. Auxillary", description = "REST Endpoints for reading static data from the style, grade, boulder-grade, and danger domain tables.")
 public class AuxillaryController {
 
     @Autowired

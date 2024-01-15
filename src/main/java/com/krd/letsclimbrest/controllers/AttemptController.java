@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/climbs/{climbId}")
 @Validated
-@Tag(name = "3. Attempts", description = "REST Endpoints for creating, updating and deleting Attempts and Attempt Images for an authenticated user's climbs.")
+@Tag(name = "4. Attempts", description = "REST Endpoints for creating, updating and deleting Attempts and Attempt Images for an authenticated user's climbs.")
 public class AttemptController {
 
     @Autowired

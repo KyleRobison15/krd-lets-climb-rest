@@ -1,5 +1,6 @@
 package com.krd.letsclimbrest.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -34,6 +35,7 @@ public class User implements UserDetails {
     private String username;
 
     @NotNull
+    @JsonIgnore
     private String password;
 
     @Column(name = "first_name")
@@ -59,6 +61,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
+    @JsonIgnore
     private List<Climb> climbs;
 
     // Method to add a climb to a user's list of climbs
