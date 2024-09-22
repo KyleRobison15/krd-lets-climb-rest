@@ -1,6 +1,6 @@
 # Welcome to krd-lets-climb-rest!
 
-View the detailed API Docs here: [http://localhost:8080/swagger-ui/index.html](http://167.172.208.26:31276/swagger-ui/index.html)
+View the detailed API Docs here: [http://167.172.208.26:31276/swagger-ui/index.html](http://167.172.208.26:31276/swagger-ui/index.html)
 
 Quick Links:
 * [Overview](https://github.com/KyleRobison15/krd-lets-climb-rest/blob/main/README.md#overview)
