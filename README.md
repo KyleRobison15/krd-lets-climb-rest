@@ -46,7 +46,7 @@ This API features 16 thoughtfully designed REST endpoints that facilitate effici
 4. Attempts - Handles CRUD operations on the Attempt resource.
 5. Auxillary - Handles Read Only requests to retrieve data from any one of the four letsclimbdb domain tables.
 
-For detailed documentation of each of the endpoints in this API, you can visit the API docs here: http://localhost:8080/swagger-ui/index.html
+For detailed documentation of each of the endpoints in this API, you can visit the API docs here: [krd-lets-climb-rest Swagger Docs](http://167.172.208.26:31276/swagger-ui/index.html)
 
 ## Filtering and Sorting
 The GET /api/v1/climbs endpoint provides several optional query parameters for dynamic sorting and filtering. To implement this, I utilized the JpaSpecificationExecutor interface from Spring Data JPA.  Each request made to this GET endpoint first builds up a query specification containing all the provided sorting and filtering query parameters. The result is a unique SQL query for retrieving a filtered and sorted list of climbs from the database all in one fell swoop!
